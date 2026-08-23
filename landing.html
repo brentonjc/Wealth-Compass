@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wealth Compass™ — Discover your financial direction</title>
+<meta name="description" content="A short, private assessment that maps the money decisions you make onto eight financial directions — then helps you and your partner understand the future you're building together.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+<!-- Open Graph / social -->
+<meta property="og:title" content="Wealth Compass™ — Discover your financial direction">
+<meta property="og:description" content="Understand the money decisions you make — and the future you're building together.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --primary:#5851E8; --bright:#635BFF; --purple:#6C63E0; --purplelight:#8B85FF;
+    --orange:#FF8A3D; --teal:#57E0D0;
+    --text:#0A2540; --muted:#5A6B85; --line:rgba(10,37,64,.10);
+    --bg:#F6F9FC; --card:#FFFFFF; --card2:#F0F3F9;
+    --ink0:#0A0E1A; --ink1:#111B34; --textdark:#EAF0FA; --muteddark:#9FB0CC;
+    --maxw:1120px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"DM Sans",system-ui,sans-serif;
+    color:var(--text); background:var(--bg);
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:"Sora",system-ui,sans-serif; line-height:1.12; letter-spacing:-.02em}
+  a{color:inherit; text-decoration:none}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px}
+  .eyebrow{font-size:12px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--primary)}
+  .eyebrow.light{color:var(--purplelight)}
+
+  /* Buttons */
+  .btn{display:inline-flex; align-items:center; gap:8px; font-weight:600; font-size:15px;
+    padding:14px 26px; border-radius:14px; transition:transform .15s ease, box-shadow .15s ease, background .15s ease; cursor:pointer; border:0}
+  .btn:hover{transform:translateY(-2px)}
+  .btn-primary{background:var(--orange); color:#3a1a00; box-shadow:0 12px 28px -8px rgba(255,138,61,.7)}
+  .btn-primary:hover{box-shadow:0 16px 34px -8px rgba(255,138,61,.8)}
+  .btn-ghost{background:rgba(255,255,255,.10); color:#fff; border:1px solid rgba(255,255,255,.28)}
+  .btn-ghost:hover{background:rgba(255,255,255,.18)}
+  .btn-dark{background:var(--primary); color:#fff; box-shadow:0 12px 28px -10px rgba(88,81,232,.6)}
+  .btn-dark:hover{background:var(--bright)}
+
+  /* Nav */
+  header.nav{position:sticky; top:0; z-index:50; backdrop-filter:saturate(140%) blur(10px);
+    background:rgba(246,249,252,.82); border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex; align-items:center; justify-content:space-between; height:66px}
+  .brand{display:flex; align-items:center; gap:10px; font-family:"Sora"; font-weight:700; font-size:18px; color:var(--text); white-space:nowrap}
+  .brand svg{display:block; flex-shrink:0}
+  .nav-links{display:flex; align-items:center; gap:30px}
+  .nav-links a.link{font-size:14.5px; font-weight:500; color:var(--muted)}
+  .nav-links a.link:hover{color:var(--text)}
+  .nav-cta{padding:10px 20px; border-radius:11px; font-size:14px; white-space:nowrap}
+  @media(max-width:720px){ .nav-links a.link{display:none} }
+  @media(max-width:520px){
+    .brand{font-size:16px; gap:8px} .brand svg{width:26px; height:26px}
+    .nav-cta{padding:9px 15px; font-size:13px}
+  }
+
+  /* Hero */
+  .hero{position:relative; overflow:hidden; color:#fff;
+    background:radial-gradient(1200px 600px at 78% -10%, #6C63E0 0%, rgba(108,99,224,0) 55%), linear-gradient(160deg,#5B54EC 0%,#3F37C0 60%,#2E2A93 100%)}
+  .hero-inner{display:grid; grid-template-columns:1.05fr .95fr; gap:52px; align-items:center; padding:88px 0 96px}
+  .hero h1{font-size:clamp(38px,5.4vw,62px); font-weight:800; color:#fff}
+  .hero p.lead{font-size:clamp(17px,2.1vw,20px); color:#DAD8FF; margin-top:22px; max-width:34ch}
+  .hero .cta-row{display:flex; gap:14px; margin-top:34px; flex-wrap:wrap}
+  .hero .trust{margin-top:26px; font-size:13.5px; color:#B9B6F0; display:flex; gap:18px; flex-wrap:wrap}
+  .hero .trust span{display:inline-flex; align-items:center; gap:7px}
+  @media(max-width:860px){ .hero-inner{grid-template-columns:1fr; gap:36px; padding:64px 0 72px} .hero-visual{order:-1} }
+
+  /* Compass rose visual */
+  .rose{width:100%; max-width:420px; margin:0 auto; filter:drop-shadow(0 24px 50px rgba(0,0,0,.35))}
+
+  /* Section shells */
+  section{padding:88px 0}
+  .section-head{max-width:640px; margin:0 auto 52px; text-align:center}
+  .section-head h2{font-size:clamp(28px,3.6vw,40px); font-weight:700; margin-top:14px}
+  .section-head p{color:var(--muted); font-size:17px; margin-top:16px}
+
+  /* Two angles */
+  .angles{display:grid; grid-template-columns:1fr 1fr; gap:24px}
+  .angle{background:var(--card); border:1px solid var(--line); border-radius:22px; padding:34px;
+    box-shadow:0 1px 2px rgba(10,37,64,.04)}
+  .angle .tag{font-size:12px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--primary)}
+  .angle h3{font-size:22px; margin:10px 0 10px}
+  .angle p{color:var(--muted); font-size:15.5px}
+  .angle .ic{width:52px; height:52px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:18px}
+  @media(max-width:720px){ .angles{grid-template-columns:1fr} }
+
+  /* Directions */
+  .directions{background:linear-gradient(180deg,#fff, #F0F3F9)}
+  .dir-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px}
+  .dir{background:var(--card); border:1px solid var(--line); border-radius:18px; padding:22px; transition:transform .15s ease, box-shadow .15s ease}
+  .dir:hover{transform:translateY(-3px); box-shadow:0 16px 34px -18px rgba(10,37,64,.28)}
+  .dir .emoji{font-size:24px}
+  .dir h4{font-family:"Sora"; font-size:16px; font-weight:600; margin:12px 0 6px}
+  .dir p{font-size:13.5px; color:var(--muted); line-height:1.5}
+  @media(max-width:900px){ .dir-grid{grid-template-columns:repeat(2,1fr)} }
+  @media(max-width:480px){ .dir-grid{grid-template-columns:1fr} }
+
+  /* How it works */
+  .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:24px; counter-reset:step}
+  .step{position:relative; padding:30px 26px; background:var(--card); border:1px solid var(--line); border-radius:20px}
+  .step .num{width:40px; height:40px; border-radius:12px; background:var(--primary); color:#fff; font-family:"Sora"; font-weight:700;
+    display:flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:18px}
+  .step h3{font-size:19px; margin-bottom:8px}
+  .step p{color:var(--muted); font-size:15px}
+  @media(max-width:820px){ .steps{grid-template-columns:1fr} }
+
+  /* Privacy band */
+  .privacy{background:var(--ink1); color:var(--textdark)}
+  .privacy .wrap{display:grid; grid-template-columns:1fr 1fr; gap:44px; align-items:center}
+  .privacy h2{font-size:clamp(26px,3.4vw,36px); color:#fff}
+  .privacy p{color:var(--muteddark); margin-top:16px; font-size:16px}
+  .privacy ul{list-style:none; margin-top:24px; display:grid; gap:14px}
+  .privacy li{display:flex; gap:12px; align-items:flex-start; font-size:15px; color:var(--textdark)}
+  .privacy li .dot{color:var(--teal); font-size:18px; line-height:1.4}
+  @media(max-width:820px){ .privacy .wrap{grid-template-columns:1fr; gap:24px} }
+
+  /* Pricing */
+  .price-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px; max-width:820px; margin:0 auto}
+  .plan{background:var(--card); border:1px solid var(--line); border-radius:22px; padding:34px; position:relative}
+  .plan.featured{border:2px solid var(--primary); box-shadow:0 24px 50px -24px rgba(88,81,232,.45)}
+  .plan .badge{position:absolute; top:-13px; left:34px; background:var(--primary); color:#fff; font-size:11.5px; font-weight:600;
+    letter-spacing:.08em; text-transform:uppercase; padding:6px 14px; border-radius:99px}
+  .plan h3{font-size:20px}
+  .plan .amount{font-family:"Sora"; font-weight:800; font-size:44px; margin:14px 0 4px; letter-spacing:-.03em}
+  .plan .amount small{font-size:15px; font-weight:500; color:var(--muted); letter-spacing:0}
+  .plan .who{color:var(--muted); font-size:14.5px; margin-bottom:22px}
+  .plan ul{list-style:none; display:grid; gap:12px; margin-bottom:26px}
+  .plan li{display:flex; gap:10px; font-size:14.5px; align-items:flex-start}
+  .plan li .ck{color:var(--success,#0F9E73); font-weight:700}
+  .plan .btn{width:100%; justify-content:center}
+  @media(max-width:720px){ .price-grid{grid-template-columns:1fr} }
+
+  /* Final CTA */
+  .final{background:linear-gradient(150deg,#5B54EC,#3F37C0); color:#fff; text-align:center}
+  .final h2{font-size:clamp(28px,4vw,44px); font-weight:800}
+  .final p{color:#DAD8FF; font-size:18px; margin:18px auto 32px; max-width:44ch}
+
+  /* Footer */
+  footer{background:var(--ink0); color:var(--muteddark); padding:48px 0}
+  .foot-inner{display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap}
+  .foot-brand{display:flex; align-items:center; gap:10px; color:#fff; font-family:"Sora"; font-weight:700}
+  footer a{color:var(--muteddark)} footer a:hover{color:#fff}
+  .foot-note{font-size:12.5px; color:#6A7A98; margin-top:18px; max-width:560px}
+</style>
+</head>
+<body>
+
+<!-- ===== Logo mark (reusable) ===== -->
+<svg width="0" height="0" style="position:absolute"><defs>
+  <symbol id="mark" viewBox="0 0 32 32">
+    <rect width="32" height="32" rx="8" fill="#5851E8"/>
+    <path d="M3,16 C6,11 10,11 13,16 C16,21 20,21 23,16 C26,11 30,11 33,16" fill="none" stroke="#FF8A3D" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M3,16 C6,21 10,21 13,16 C16,11 20,11 23,16 C26,21 30,21 33,16" fill="none" stroke="#57E0D0" stroke-width="2.6" stroke-linecap="round"/>
+  </symbol>
+</defs></svg>
+
+<!-- ===== Nav ===== -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top"><svg width="30" height="30"><use href="#mark"/></svg> Wealth Compass™</a>
+    <nav class="nav-links">
+      <a class="link" href="#how">How it works</a>
+      <a class="link" href="#directions">The 8 directions</a>
+      <a class="link" href="#pricing">Pricing</a>
+      <a class="btn btn-dark nav-cta" href="index.html">Take the assessment</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ===== Hero ===== -->
+<div id="top" class="hero">
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <span class="eyebrow light">For you &amp; your partner</span>
+      <h1 style="margin-top:16px">Discover your financial direction</h1>
+      <p class="lead">Understand the money decisions you make — and the future you're building together.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="index.html">Take the free assessment →</a>
+        <a class="btn btn-ghost" href="#how">See how it works</a>
+      </div>
+      <div class="trust">
+        <span>🔒 Private — encrypted on your device</span>
+        <span>⏱ About 5 minutes</span>
+        <span>💛 Free to start</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <!-- Compass Rose — an 8-direction radar, echoing the in-app chart -->
+      <svg class="rose" viewBox="-72 -16 544 432" role="img" aria-label="A compass rose showing eight financial directions.">
+        <g fill="none" stroke="rgba(255,255,255,.16)" stroke-width="1">
+          <polygon points="200,40 313,87 360,200 313,313 200,360 87,313 40,200 87,87"/>
+          <polygon points="200,80 285,115 320,200 285,285 200,320 115,285 80,200 115,115"/>
+          <polygon points="200,120 257,143 280,200 257,257 200,280 143,257 120,200 143,143"/>
+        </g>
+        <g stroke="rgba(255,255,255,.14)" stroke-width="1">
+          <line x1="200" y1="200" x2="200" y2="40"/><line x1="200" y1="200" x2="313" y2="87"/>
+          <line x1="200" y1="200" x2="360" y2="200"/><line x1="200" y1="200" x2="313" y2="313"/>
+          <line x1="200" y1="200" x2="200" y2="360"/><line x1="200" y1="200" x2="87" y2="313"/>
+          <line x1="200" y1="200" x2="40" y2="200"/><line x1="200" y1="200" x2="87" y2="87"/>
+        </g>
+        <!-- sample plotted shape -->
+        <polygon points="200,58 300,100 300,200 250,250 200,300 150,258 96,200 140,128"
+          fill="rgba(139,133,255,.38)" stroke="#8B85FF" stroke-width="2.5" stroke-linejoin="round"/>
+        <g fill="#8B85FF">
+          <circle cx="200" cy="58" r="4.5"/><circle cx="300" cy="100" r="4.5"/><circle cx="300" cy="200" r="4.5"/>
+          <circle cx="250" cy="250" r="4.5"/><circle cx="200" cy="300" r="4.5"/><circle cx="150" cy="258" r="4.5"/>
+          <circle cx="96" cy="200" r="4.5"/><circle cx="140" cy="128" r="4.5"/>
+        </g>
+        <g font-family="Sora" font-size="13" font-weight="600" fill="#EAF0FA">
+          <text x="200" y="24" text-anchor="middle">🛡 Security</text>
+          <text x="330" y="80" text-anchor="start">🕊 Freedom</text>
+          <text x="378" y="205" text-anchor="start">📈 Growth</text>
+          <text x="330" y="330" text-anchor="start">✨ Experiences</text>
+          <text x="200" y="388" text-anchor="middle">❤️ Connection</text>
+          <text x="70" y="330" text-anchor="end">🎯 Purpose</text>
+          <text x="22" y="205" text-anchor="end">🌳 Legacy</text>
+          <text x="70" y="80" text-anchor="end">⚖️ Balance</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Two angles ===== -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Two angles, one picture</span>
+      <h2>Your money, from two angles</h2>
+      <p>A short assessment reads both what you value and how you decide — and it's where they meet that the real insight lives.</p>
+    </div>
+    <div class="angles">
+      <div class="angle">
+        <div class="ic" style="background:rgba(88,81,232,.10)">🧭</div>
+        <span class="tag">Your Compass</span>
+        <h3>What you value</h3>
+        <p>The priorities that quietly shape your money decisions — mapped across eight directions, from Security to Legacy.</p>
+      </div>
+      <div class="angle">
+        <div class="ic" style="background:rgba(87,224,208,.16)">📊</div>
+        <span class="tag">Your Navigation</span>
+        <h3>How you decide</h3>
+        <p>The way you actually plan, weigh risk and manage money day to day — structured, adaptive, reflective, and more.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== The 8 directions ===== -->
+<section id="directions" class="directions">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">The Compass Rose</span>
+      <h2>Eight directions your money can point</h2>
+      <p>No direction is better than another — each brings its own trade-offs. Your compass simply shows where yours leans today.</p>
+    </div>
+    <div class="dir-grid">
+      <div class="dir"><div class="emoji">🛡</div><h4>Security</h4><p>Decisions that create safety and reduce worry.</p></div>
+      <div class="dir"><div class="emoji">🕊</div><h4>Freedom</h4><p>Choice, flexibility and keeping your options open.</p></div>
+      <div class="dir"><div class="emoji">📈</div><h4>Growth</h4><p>Building wealth and thinking long term.</p></div>
+      <div class="dir"><div class="emoji">✨</div><h4>Experiences</h4><p>Enjoying life today and creating memories.</p></div>
+      <div class="dir"><div class="emoji">❤️</div><h4>Connection</h4><p>Family and the people closest to you.</p></div>
+      <div class="dir"><div class="emoji">🎯</div><h4>Purpose</h4><p>Money that reflects your values and something meaningful.</p></div>
+      <div class="dir"><div class="emoji">🌳</div><h4>Legacy</h4><p>Future generations and what you'll leave behind.</p></div>
+      <div class="dir"><div class="emoji">⚖️</div><h4>Balance</h4><p>Living well today while planning for tomorrow.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== How it works ===== -->
+<section id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">How it works</span>
+      <h2>Three simple steps</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <h3>Answer 21 questions</h3>
+        <p>Short, honest questions about money — no jargon, no right answers. About five minutes.</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <h3>See your Compass</h3>
+        <p>Get a personal reading of your eight directions, what they mean for you, and a practical next step.</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <h3>Compare with your partner</h3>
+        <p>Invite your partner with a private code. Overlay your two compasses and start the conversation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Privacy ===== -->
+<section class="privacy">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow light">Private by design</span>
+      <h2 style="margin-top:14px">Your answers stay yours</h2>
+      <p>This is about understanding, never judgement. Nothing is sold, and nothing reaches your partner unless you choose to send it.</p>
+    </div>
+    <ul>
+      <li><span class="dot">◆</span><div><strong>Encrypted on your device.</strong> Your answers are encrypted before anything is stored — we can't read them.</div></li>
+      <li><span class="dot">◆</span><div><strong>Shared only if you choose.</strong> Partner sharing happens through a private code and passphrase you control.</div></li>
+      <li><span class="dot">◆</span><div><strong>No accounts, no tracking.</strong> Start straight away — there's nothing to sign up for.</div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== Pricing ===== -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Simple pricing</span>
+      <h2>Start free. Go deeper together.</h2>
+      <p>Take your own Compass for free. Unlock the full shared experience once — no subscription.</p>
+    </div>
+    <div class="price-grid">
+      <div class="plan">
+        <h3>Your Compass</h3>
+        <div class="amount">Free</div>
+        <p class="who">Just for you</p>
+        <ul>
+          <li><span class="ck">✓</span> Your full 8-direction Compass</li>
+          <li><span class="ck">✓</span> What each direction means for you</li>
+          <li><span class="ck">✓</span> Conversation cards to spark honest talks</li>
+        </ul>
+        <a class="btn btn-dark" href="index.html">Take the assessment</a>
+      </div>
+      <div class="plan featured">
+        <span class="badge">Most popular</span>
+        <h3>Shared Compass</h3>
+        <div class="amount">$10 <small>one-time</small></div>
+        <p class="who">For you &amp; your partner</p>
+        <ul>
+          <li><span class="ck">✓</span> Everything in Free</li>
+          <li><span class="ck">✓</span> Add your partner &amp; overlay both compasses</li>
+          <li><span class="ck">✓</span> Personalised recommendations</li>
+          <li><span class="ck">✓</span> A practical shared action plan</li>
+        </ul>
+        <a class="btn btn-primary" href="index.html">Start together</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Final CTA ===== -->
+<section class="final">
+  <div class="wrap">
+    <h2>What kind of financial future<br>are you building together?</h2>
+    <p>Discover your direction. Understand your partner's. Build a shared financial future.</p>
+    <a class="btn btn-primary" href="index.html">Discover your Compass →</a>
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-inner">
+      <a class="foot-brand" href="#top"><svg width="26" height="26"><use href="#mark"/></svg> Wealth Compass™</a>
+      <nav style="display:flex; gap:24px; font-size:14px">
+        <a href="#how">How it works</a>
+        <a href="#directions">Directions</a>
+        <a href="#pricing">Pricing</a>
+        <a href="index.html">Take the assessment</a>
+      </nav>
+    </div>
+    <p class="foot-note">Wealth Compass helps you understand your own money values and share them with a partner. It is a tool for reflection and conversation, not financial, investment or tax advice.</p>
+  </div>
+</footer>
+
+</body>
+</html>
