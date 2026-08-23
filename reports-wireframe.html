@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Wealth Compass™ — PDF Reports Wireframe</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#F6F9FC; --card:#FFFFFF; --card2:#F0F3F9; --card3:#E7ECF5;
+    --primary:#5851E8; --primarybright:#635BFF; --purple:#6C63E0; --purplelight:#8B85FF;
+    --success:#0F9E73; --warn:#C97A0E; --text:#0A2540; --muted:#5A6B85; --line:rgba(10,37,64,.12);
+    --ink:#111B34; --textdark:#EAF0FA;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:#E4E8F0;font-family:'DM Sans',system-ui,sans-serif;color:var(--text);-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .display{font-family:'Sora',system-ui,sans-serif;}
+  .mono{font-family:'DM Mono',ui-monospace,monospace;}
+
+  /* Review toolbar (screen only) */
+  .toolbar{position:sticky;top:0;z-index:50;background:#0A2540;color:#EAF0FA;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;}
+  .toolbar h1{font-size:15px;margin:0;font-weight:600;}
+  .toolbar p{margin:0;font-size:12px;color:#8291AD;}
+  .toolbar button{background:var(--primarybright);color:#fff;border:0;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;}
+  .annot{max-width:794px;margin:26px auto 8px;color:var(--muted);font-size:13px;padding:0 8px;}
+  .annot b{color:var(--text);}
+
+  /* A4 page */
+  .page{
+    width:794px; min-height:1123px; background:#fff; margin:14px auto; padding:56px 56px 48px;
+    box-shadow:0 10px 30px rgba(10,37,64,.14); position:relative; display:flex; flex-direction:column;
+  }
+  .page.ink{background:linear-gradient(165deg,#0A0E1A 0%,#111B34 60%,#1C2A4C 100%);color:var(--textdark);}
+
+  /* header / footer */
+  .rpt-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:20px;}
+  .ink .rpt-head{border-color:rgba(130,145,173,.28);}
+  .brand{display:flex;align-items:center;gap:9px;font-family:'Sora';font-weight:600;font-size:15px;}
+  .eyebrow{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--primary);}
+  .ink .eyebrow{color:var(--purplelight);}
+  .rpt-title{font-family:'Sora';font-weight:600;font-size:30px;margin:6px 0 0;letter-spacing:-.01em;}
+  .meta{text-align:right;font-size:12px;color:var(--muted);line-height:1.6;}
+  .ink .meta{color:#8291AD;}
+  .foot{margin-top:auto;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
+  .ink .foot{border-color:rgba(130,145,173,.28);color:#8291AD;}
+
+  h2.section{font-family:'Sora';font-weight:600;font-size:15px;letter-spacing:.02em;margin:26px 0 12px;display:flex;align-items:center;gap:8px;}
+  h2.section .num{width:22px;height:22px;border-radius:6px;background:var(--card2);color:var(--primary);font-size:12px;display:inline-flex;align-items:center;justify-content:center;font-family:'DM Mono';}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;}
+  .card.tint{background:var(--card2);border-color:transparent;}
+  .card.dark{background:var(--ink);color:var(--textdark);border:0;}
+  .card.rule{border-left:4px solid var(--primary);}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  p.lead{font-size:15px;line-height:1.55;margin:0;}
+  p.body{font-size:13px;line-height:1.6;color:var(--muted);margin:6px 0 0;}
+  .dark p.body{color:rgba(234,240,250,.72);}
+
+  /* radar */
+  .radar-wrap{display:flex;gap:24px;align-items:center;margin-top:12px;}
+  .radar-box{background:var(--ink);border-radius:16px;padding:14px;flex-shrink:0;}
+  .legend{display:flex;flex-direction:column;gap:10px;font-size:12px;}
+  .legend .row{display:flex;align-items:center;gap:8px;}
+  .swatch{width:12px;height:12px;border-radius:3px;}
+
+  /* dimension bars */
+  .bars{display:flex;flex-direction:column;gap:11px;}
+  .bar-row{display:flex;flex-direction:column;gap:5px;}
+  .bar-top{display:flex;justify-content:space-between;font-size:13px;}
+  .bar-top .tier{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;}
+  .track{height:8px;border-radius:99px;background:var(--card3);}
+  .fill{height:100%;border-radius:99px;background:var(--primary);}
+
+  /* navigation journey */
+  .journey text{font-family:'DM Sans';}
+
+  /* list steps */
+  ol.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:10px;}
+  ol.steps li{counter-increment:s;display:flex;gap:12px;font-size:13px;line-height:1.5;}
+  ol.steps li::before{content:counter(s);flex-shrink:0;width:24px;height:24px;border-radius:99px;background:var(--primary);color:#fff;font-family:'DM Mono';font-size:12px;display:flex;align-items:center;justify-content:center;}
+  ul.checks{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;}
+  ul.checks li{display:flex;gap:10px;font-size:13px;line-height:1.5;color:var(--text);}
+  ul.checks li::before{content:'○';color:var(--primary);font-size:15px;}
+  .starters{display:flex;flex-direction:column;gap:8px;}
+  .starter{background:var(--card2);border-radius:10px;padding:11px 14px;font-size:13px;font-family:'Sora';font-weight:500;}
+  .cta-link{display:inline-flex;align-items:center;gap:7px;margin-top:11px;background:var(--primary);color:#fff;text-decoration:none;font-size:12.5px;font-weight:600;padding:10px 16px;border-radius:99px;}
+  .cta-link .url{font-family:'DM Mono';font-weight:400;font-size:11px;opacity:.8;}
+
+  .closing{text-align:center;font-family:'Sora';font-weight:500;font-size:17px;margin:28px 0 6px;line-height:1.4;}
+  .ink .closing{color:var(--textdark);}
+
+  @media print{
+    body{background:#fff;} .toolbar,.annot{display:none;}
+    .page{margin:0;box-shadow:none;width:auto;min-height:auto;page-break-after:always;padding:48px;}
+    @page{size:A4;margin:0;}
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div><h1>Wealth Compass™ — PDF Reports (wireframe)</h1><p>Three reports · A4 portrait · sample data (Sarah &amp; James). Fintech design system. Print → Save as PDF to preview output.</p></div>
+  <button onclick="window.print()">Print / Save as PDF</button>
+</div>
+
+<!-- svg wordmark reused -->
+<svg width="0" height="0" style="position:absolute"><defs><g id="wm"><path d="M0,10 C5,3 13,3 18,10 C23,17 31,17 36,10 C41,3 49,3 54,10 C59,17 67,17 72,10" fill="none" stroke="#FF8A3D" stroke-width="2.4" stroke-linecap="round"/><path d="M0,10 C5,17 13,17 18,10 C23,3 31,3 36,10 C41,17 49,17 54,10 C59,3 67,3 72,10" fill="none" stroke="#57E0D0" stroke-width="2.4" stroke-linecap="round"/></g></defs></svg>
+
+<!-- =================================================================== -->
+<p class="annot"><b>Report 1 · My Wealth Compass.</b> The signature rose + ranked directions on page 1; narrative, reflection and next steps flow below. Personalised header, private-by-design footer.</p>
+<section class="page" id="p1">
+  <div class="rpt-head">
+    <div>
+      <div class="brand"><svg width="72" height="20" viewBox="0 0 72 20"><use href="#wm"/></svg> Wealth Compass™</div>
+      <p class="eyebrow" style="margin-top:18px">Sarah's report</p>
+      <h1 class="rpt-title">My Wealth Compass</h1>
+    </div>
+    <div class="meta">Prepared 6 Jul 2026<br>8 directions · 5 preferences<br><span style="color:var(--primary)">🔒 Private to you</span></div>
+  </div>
+
+  <div class="radar-wrap">
+    <div class="radar-box"><canvas id="rose1" width="300" height="300"></canvas></div>
+    <div>
+      <p class="eyebrow">Where your compass points</p>
+      <p class="lead" style="margin-top:8px">Your compass points most strongly toward <b>Security</b>, <b>Connection</b> and <b>Experiences</b>. This is what your financial decisions naturally work toward.</p>
+      <div class="legend" style="margin-top:14px">
+        <div class="row"><span class="swatch" style="background:var(--primarybright)"></span> Your Compass Rose — the further out, the stronger the pull.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section"><span class="num">1</span> Your directions</h2>
+  <div class="card">
+    <div class="bars">
+      <div class="bar-row"><div class="bar-top"><span>🛡 Security</span><span class="tier">Primary</span></div><div class="track"><div class="fill" style="width:90%"></div></div></div>
+      <div class="bar-row"><div class="bar-top"><span>❤️ Connection</span><span class="tier">Primary</span></div><div class="track"><div class="fill" style="width:84%"></div></div></div>
+      <div class="bar-row"><div class="bar-top"><span>✨ Experiences</span><span class="tier">Supporting</span></div><div class="track"><div class="fill" style="width:70%;opacity:.8"></div></div></div>
+      <div class="bar-row"><div class="bar-top"><span>⚖️ Balance</span><span class="tier">Supporting</span></div><div class="track"><div class="fill" style="width:62%;opacity:.75"></div></div></div>
+      <div class="bar-row"><div class="bar-top"><span>🕊 Freedom</span><span class="tier">Quieter</span></div><div class="track"><div class="fill" style="width:55%;opacity:.55"></div></div></div>
+      <div class="bar-row"><div class="bar-top"><span>🎯 Purpose</span><span class="tier">Quieter</span></div><div class="track"><div class="fill" style="width:50%;opacity:.5"></div></div></div>
+      <div class="bar-row"><div class="bar-top"><span>📈 Growth</span><span class="tier">Quieter</span></div><div class="track"><div class="fill" style="width:42%;opacity:.45"></div></div></div>
+      <div class="bar-row"><div class="bar-top"><span>🌳 Legacy</span><span class="tier">Quieter</span></div><div class="track"><div class="fill" style="width:38%;opacity:.4"></div></div></div>
+    </div>
+  </div>
+
+  <h2 class="section"><span class="num">2</span> What this means</h2>
+  <div class="card dark">
+    <p class="lead display" style="font-weight:600">You tend to make money decisions that create safety and look after the people you love.</p>
+    <p class="body">With Security and Connection leading your compass, you're drawn to choices that reduce worry and support your family — a steady foundation others rely on.</p>
+  </div>
+
+  <h2 class="section"><span class="num">3</span> An area to explore</h2>
+  <div class="card rule">
+    <p class="body" style="color:var(--text)">Growth sits quieter on your compass right now. You may wish to explore how a little long-term investing could quietly fund the security and experiences you value.</p>
+  </div>
+
+  <div class="grid2" style="margin-top:22px">
+    <div>
+      <h2 class="section" style="margin-top:0"><span class="num">4</span> Reflection</h2>
+      <div class="card tint"><p class="lead display" style="font-weight:500;font-size:14px">"When keeping money safe and enjoying it today pull in different directions, which do you tend to follow?"</p></div>
+    </div>
+    <div>
+      <h2 class="section" style="margin-top:0"><span class="num">5</span> A practical next step</h2>
+      <div class="card"><p class="body" style="color:var(--text)">Set a target for your emergency fund, then automate a small monthly transfer toward it.</p></div>
+    </div>
+  </div>
+
+  <div class="foot"><span>Wealth Compass™ · Encrypted on your device — we can't read it.</span><span>Page 1 · My Wealth Compass</span></div>
+</section>
+
+<!-- =================================================================== -->
+<p class="annot"><b>Report 2 · My Navigation Preferences.</b> The five-preference journey line (from your app), then how you decide + working-with-others guidance.</p>
+<section class="page" id="p2">
+  <div class="rpt-head">
+    <div>
+      <div class="brand"><svg width="72" height="20" viewBox="0 0 72 20"><use href="#wm"/></svg> Wealth Compass™</div>
+      <p class="eyebrow" style="margin-top:18px">Sarah's report</p>
+      <h1 class="rpt-title">My Navigation Preferences</h1>
+    </div>
+    <div class="meta">Prepared 6 Jul 2026<br>How you approach decisions<br><span style="color:var(--primary)">🔒 Private to you</span></div>
+  </div>
+
+  <p class="body" style="margin-top:16px;font-size:14px">Everyone is a blend of all five. Here's where you naturally lean — the higher the line, the stronger the lean.</p>
+
+  <h2 class="section"><span class="num">1</span> How you navigate, step by step</h2>
+  <div class="card">
+    <svg class="journey" viewBox="0 0 680 260" style="width:100%">
+      <g stroke="#EEF1F7" stroke-width="1"><line x1="40" y1="60" x2="640" y2="60"/><line x1="40" y1="130" x2="640" y2="130"/><line x1="40" y1="200" x2="640" y2="200"/></g>
+      <path d="M70,80 C130,80 130,150 190,150 C250,150 250,95 310,95 C370,95 370,120 430,120 C490,120 490,175 550,175 L610,175 L610,200 L70,200 Z" fill="rgba(88,81,232,.05)"/>
+      <path d="M70,80 C130,80 130,150 190,150 C250,150 250,95 310,95 C370,95 370,120 430,120 C490,120 490,175 550,175 L610,175" fill="none" stroke="#5851E8" stroke-width="5" stroke-linecap="round"/>
+      <g>
+        <circle cx="70" cy="80" r="8" fill="#5851E8"/><circle cx="70" cy="80" r="3.5" fill="#fff"/>
+        <circle cx="190" cy="150" r="8" fill="#2CA6A4"/><circle cx="190" cy="150" r="3.5" fill="#fff"/>
+        <circle cx="310" cy="95" r="8" fill="#6C63E0"/><circle cx="310" cy="95" r="3.5" fill="#fff"/>
+        <circle cx="430" cy="120" r="8" fill="#E3A94B"/><circle cx="430" cy="120" r="3.5" fill="#fff"/>
+        <circle cx="610" cy="175" r="8" fill="#17A673"/><circle cx="610" cy="175" r="3.5" fill="#fff"/>
+      </g>
+      <g font-size="16" text-anchor="middle"><text x="70" y="60">📋</text><text x="190" y="130">🌊</text><text x="310" y="75">🔍</text><text x="430" y="100">🤝</text><text x="610" y="155">🌿</text></g>
+      <g font-size="12" font-weight="500" fill="#3A4A63" text-anchor="middle">
+        <text x="70" y="235">Structured</text><text x="190" y="235">Adaptive</text><text x="310" y="235">Reflective</text><text x="430" y="235">Collaborative</text><text x="610" y="235">Intuitive</text>
+      </g>
+      <g font-size="10" fill="#8A97AC" text-anchor="middle">
+        <text x="70" y="250">Often</text><text x="190" y="250">Sometimes</text><text x="310" y="250">Often</text><text x="430" y="250">Sometimes</text><text x="610" y="250">Rarely</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="card tint" style="margin-top:14px;display:flex;gap:12px;align-items:flex-start">
+    <span style="font-size:20px">📋</span>
+    <p class="lead" style="font-size:14px"><b>Your strongest step is Structured.</b> <span style="color:var(--muted)">You feel most at home planning ahead — but you flex through all five as situations change.</span></p>
+  </div>
+
+  <h2 class="section"><span class="num">2</span> How you tend to decide</h2>
+  <div class="card dark"><p class="body" style="font-size:14px">You naturally prefer to plan ahead and understand your options before deciding. You feel most at ease with organised systems and time to think. In fast-moving moments, borrowing a little from your Adaptive side may also help.</p></div>
+
+  <h2 class="section"><span class="num">3</span> Communication suggestions</h2>
+  <div class="card"><ul class="checks">
+    <li>Share your plan early, so others can weigh in before it feels fixed.</li>
+    <li>Name which decisions you'd like time to think through vs. can make on the spot.</li>
+    <li>When plans change, say so out loud — others may not see your recalculation.</li>
+  </ul></div>
+
+  <h2 class="section"><span class="num">4</span> Working with different preferences</h2>
+  <div class="card rule"><p class="body" style="color:var(--text)">A partner who leans Adaptive may want to decide more quickly than feels comfortable to you. Agreeing when a decision needs a plan and when it's fine to move fast can help you both.</p></div>
+
+  <div class="foot"><span>Wealth Compass™ · Encrypted on your device — we can't read it.</span><span>Page 2 · My Navigation Preferences</span></div>
+</section>
+
+<!-- =================================================================== -->
+<p class="annot"><b>Report 3 · Our Shared Compass (page 1).</b> Overlaid roses + the non-judgemental comparison sections. Dark "moment" cover to signal it's the shared centrepiece.</p>
+<section class="page ink" id="p3">
+  <div class="rpt-head">
+    <div>
+      <div class="brand"><svg width="72" height="20" viewBox="0 0 72 20"><use href="#wm"/></svg> Wealth Compass™</div>
+      <p class="eyebrow" style="margin-top:18px">Sarah &amp; James</p>
+      <h1 class="rpt-title">Our Shared Compass</h1>
+    </div>
+    <div class="meta">Prepared 6 Jul 2026<br>Two compasses, one direction</div>
+  </div>
+
+  <div class="radar-wrap" style="margin-top:20px">
+    <div class="radar-box" style="background:#0d1730"><canvas id="rose3" width="300" height="300"></canvas></div>
+    <div>
+      <div class="legend">
+        <div class="row"><span class="swatch" style="background:var(--primarybright)"></span> Sarah</div>
+        <div class="row"><span class="swatch" style="background:var(--purplelight)"></span> James</div>
+      </div>
+      <p class="body" style="margin-top:14px;font-size:13px">Where the two shapes overlap, you're aligned. Where they differ, there's a conversation worth having — not a problem to fix.</p>
+    </div>
+  </div>
+
+  <h2 class="section" style="color:var(--textdark)"><span class="num" style="background:rgba(139,133,255,.2);color:var(--purplelight)">1</span> Shared Direction</h2>
+  <div class="card" style="background:rgba(255,255,255,.05);border:1px solid rgba(130,145,173,.28)"><p class="body" style="color:rgba(234,240,250,.85)">You both point strongly toward <b style="color:var(--purplelight)">Security</b>. Feeling financially safe matters to both of you — a shared foundation to build on.</p></div>
+
+  <div class="grid2" style="margin-top:14px">
+    <div class="card" style="background:rgba(255,255,255,.05);border:1px solid rgba(130,145,173,.28)"><p class="eyebrow">Complementary perspectives</p><p class="body" style="color:rgba(234,240,250,.85);margin-top:8px">James's leaning toward Growth pairs with Sarah's toward Connection — one builds the future, one nurtures the present.</p></div>
+    <div class="card" style="background:rgba(255,255,255,.05);border:1px solid rgba(130,145,173,.28)"><p class="eyebrow">Different areas of focus</p><p class="body" style="color:rgba(234,240,250,.85);margin-top:8px">Sarah leans toward Connection; James toward Growth. Two different ways of building wealth — and a good conversation to have.</p></div>
+  </div>
+
+  <div class="foot"><span>Wealth Compass™ · Shared with your partner's consent.</span><span>Page 3 · Our Shared Compass</span></div>
+</section>
+
+<!-- =================================================================== -->
+<p class="annot"><b>Report 3 · Our Shared Compass (page 2).</b> Navigation comparison — how you each <em>decide</em>, overlaid like the compass roses. Mirrors Report 2 for the pair.</p>
+<section class="page" id="p3b">
+  <div class="rpt-head">
+    <div>
+      <div class="brand"><svg width="72" height="20" viewBox="0 0 72 20"><use href="#wm"/></svg> Wealth Compass™</div>
+      <p class="eyebrow" style="margin-top:18px">Sarah &amp; James</p>
+      <h1 class="rpt-title" style="font-size:24px">How you each navigate</h1>
+    </div>
+    <div class="meta">Our Shared Compass<br>Part 2 of 3</div>
+  </div>
+
+  <p class="body" style="margin-top:16px;font-size:14px">Your Compass shows <em>what</em> you each prioritise. This shows <em>how</em> you each decide — laid over each other. The higher the line, the stronger the lean.</p>
+
+  <h2 class="section"><span class="num">2</span> How you each navigate</h2>
+  <div class="card">
+    <div class="legend" style="flex-direction:row;justify-content:flex-end;gap:18px;margin-bottom:2px">
+      <div class="row"><span class="swatch" style="background:#5851E8"></span> Sarah</div>
+      <div class="row"><span class="swatch" style="background:#8B85FF"></span> James</div>
+    </div>
+    <svg class="journey" viewBox="0 0 680 260" style="width:100%">
+      <g stroke="#EEF1F7" stroke-width="1"><line x1="40" y1="60" x2="640" y2="60"/><line x1="40" y1="130" x2="640" y2="130"/><line x1="40" y1="200" x2="640" y2="200"/></g>
+      <!-- James (dashed) -->
+      <path d="M70,100 C130,100 145,115 205,115 C265,115 280,155 340,155 C400,155 415,120 475,120 C535,120 550,90 610,90" fill="none" stroke="#8B85FF" stroke-width="4" stroke-linecap="round" stroke-dasharray="6 5"/>
+      <!-- Sarah (solid) -->
+      <path d="M70,80 C130,80 145,150 205,150 C265,150 280,95 340,95 C400,95 415,170 475,170 C535,170 550,130 610,130" fill="none" stroke="#5851E8" stroke-width="5" stroke-linecap="round"/>
+      <g>
+        <circle cx="70" cy="80" r="7" fill="#5851E8"/><circle cx="205" cy="150" r="7" fill="#5851E8"/><circle cx="340" cy="95" r="7" fill="#5851E8"/><circle cx="475" cy="170" r="7" fill="#5851E8"/><circle cx="610" cy="130" r="7" fill="#5851E8"/>
+        <circle cx="70" cy="100" r="6" fill="#8B85FF"/><circle cx="205" cy="115" r="6" fill="#8B85FF"/><circle cx="340" cy="155" r="6" fill="#8B85FF"/><circle cx="475" cy="120" r="6" fill="#8B85FF"/><circle cx="610" cy="90" r="6" fill="#8B85FF"/>
+      </g>
+      <g font-size="16" text-anchor="middle"><text x="70" y="46">📋</text><text x="205" y="46">🌊</text><text x="340" y="46">🔍</text><text x="475" y="46">🤝</text><text x="610" y="46">🌿</text></g>
+      <g font-size="12" font-weight="500" fill="#3A4A63" text-anchor="middle">
+        <text x="70" y="235">Structured</text><text x="205" y="235">Adaptive</text><text x="340" y="235">Reflective</text><text x="475" y="235">Collaborative</text><text x="610" y="235">Intuitive</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="grid2" style="margin-top:16px">
+    <div class="card tint"><p class="eyebrow">Where you're in step</p><p class="body" style="color:var(--text);margin-top:8px">You both lean <b>Structured</b> — a plan before big money decisions steadies you both. Lean on this when a choice feels heavy.</p></div>
+    <div class="card rule"><p class="eyebrow">Where your styles differ</p><p class="body" style="color:var(--text);margin-top:8px">Sarah leans <b>Reflective</b> (research first); James leans <b>Intuitive</b> (trusts the gut, keeps it simple). Agreeing which decisions are worth the research can help you both.</p></div>
+  </div>
+
+  <div class="card dark" style="margin-top:16px">
+    <p class="eyebrow">Deciding well together</p>
+    <p class="body" style="font-size:14px;margin-top:8px">When a decision matters, give it Sarah's research and James's instinct in turn — you'll move faster than Sarah alone and more confidently than James alone. For small, everyday money calls, borrow James's lightness.</p>
+  </div>
+
+  <div class="foot"><span>Wealth Compass™ · Shared with your partner's consent.</span><span>Page 4 · Our Shared Compass</span></div>
+</section>
+
+<!-- =================================================================== -->
+<p class="annot"><b>Report 3 · Our Shared Compass (page 3).</b> The actionable back half — alignment opportunities, conversation starters, a check-in agenda and a 90-day plan, closing on the recurring question.</p>
+<section class="page" id="p4">
+  <div class="rpt-head">
+    <div>
+      <div class="brand"><svg width="72" height="20" viewBox="0 0 72 20"><use href="#wm"/></svg> Wealth Compass™</div>
+      <p class="eyebrow" style="margin-top:18px">Sarah &amp; James</p>
+      <h1 class="rpt-title" style="font-size:24px">Building it together</h1>
+    </div>
+    <div class="meta">Our Shared Compass<br>Part 3 of 3</div>
+  </div>
+
+  <h2 class="section"><span class="num">3</span> Opportunities for alignment</h2>
+  <div class="card"><ul class="checks">
+    <li>Set one shared savings goal you both feel is "safe enough" — it plays to your common Security.</li>
+    <li>Agree a monthly amount James can direct toward Growth without it feeling risky to Sarah.</li>
+    <li>Ring-fence a "Connection &amp; Experiences" fund so togetherness has its own budget.</li>
+  </ul></div>
+
+  <h2 class="section"><span class="num">4</span> Conversation starters</h2>
+  <div class="starters">
+    <div class="starter">What does "financially safe enough" look like to each of us?</div>
+    <div class="starter">Where would you like us to be a little braver with money?</div>
+    <div class="starter">What's one thing you'd love our money to make possible this year?</div>
+  </div>
+  <a class="cta-link" href="https://your-wealth-compass.app/#conversations" target="_blank">💬 Open 75+ conversation starters in the app <span>→</span> <span class="url">your-wealth-compass.app/#conversations</span></a>
+
+  <div class="grid2" style="margin-top:22px">
+    <div>
+      <h2 class="section" style="margin-top:0"><span class="num">5</span> Financial check-in agenda</h2>
+      <div class="card tint"><ol class="steps">
+        <li>Wins since last time — what went well?</li>
+        <li>Anything worrying either of us?</li>
+        <li>Progress on our shared goal.</li>
+        <li>One decision to make together.</li>
+      </ol></div>
+    </div>
+    <div>
+      <h2 class="section" style="margin-top:0"><span class="num">6</span> 90-day shared plan</h2>
+      <div class="card"><ol class="steps">
+        <li>Weeks 1–2 — open a joint "safe enough" savings goal.</li>
+        <li>Month 1 — set the Growth &amp; Experiences amounts.</li>
+        <li>Month 2 — first 20-minute money check-in.</li>
+        <li>Month 3 — review together, adjust the plan.</li>
+      </ol></div>
+    </div>
+  </div>
+
+  <p class="closing">What kind of financial future<br>are we building together?</p>
+
+  <div class="foot"><span>Wealth Compass™ · Encrypted &amp; private.</span><span>Page 5 · Our Shared Compass</span></div>
+</section>
+
+<script>
+  Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+  const DIMS = ['🛡 Security','🕊 Freedom','📈 Growth','✨ Experiences','❤️ Connection','🎯 Purpose','🌳 Legacy','⚖️ Balance'];
+  const scale = () => ({ r:{ min:0,max:100,beginAtZero:true, ticks:{display:false,stepSize:25},
+    grid:{color:'rgba(130,145,173,.22)'}, angleLines:{color:'rgba(130,145,173,.22)'},
+    pointLabels:{color:'#EAF0FA',font:{size:10,weight:'500'}} } });
+  const opts = { responsive:false, animation:false, plugins:{legend:{display:false}}, scales:scale() };
+  new Chart(document.getElementById('rose1'), { type:'radar',
+    data:{labels:DIMS,datasets:[{data:[90,55,42,70,84,50,38,62],backgroundColor:'rgba(99,91,255,.30)',borderColor:'#635BFF',borderWidth:2,pointBackgroundColor:'#635BFF',pointRadius:3}]}, options:opts });
+  new Chart(document.getElementById('rose3'), { type:'radar',
+    data:{labels:DIMS,datasets:[
+      {label:'Sarah',data:[90,55,42,70,84,50,38,62],backgroundColor:'rgba(99,91,255,.22)',borderColor:'#635BFF',borderWidth:2,pointBackgroundColor:'#635BFF',pointRadius:2.5},
+      {label:'James',data:[80,60,82,58,52,66,70,48],backgroundColor:'rgba(139,133,255,.16)',borderColor:'#8B85FF',borderWidth:2,pointBackgroundColor:'#8B85FF',pointRadius:2.5,borderDash:[5,4]}
+    ]}, options:opts });
+
+  // When opened from the mobile viewer's Download button (?print=1), go straight
+  // to the print/save-as-PDF dialog once the radars have rendered.
+  if (new URLSearchParams(location.search).has('print')) {
+    setTimeout(() => window.print(), 700);
+  }
+</script>
+</body>
+</html>

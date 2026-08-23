@@ -1,0 +1,5 @@
+/* Source for the compiled Tailwind bundle. Build with:  npm run build:css
+   Output: styles/tailwind.css (committed, linked from index.html). */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

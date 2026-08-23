@@ -1,0 +1,13 @@
+key,text
+screen.headline,Our Shared Compass
+screen.eyebrowTemplate,{name} & {partner}
+screen.directionLabel,Shared Direction
+screen.focusLabel,Different Areas of Focus
+screen.downloadButton,Download Our Shared Compass (PDF)
+narrative.sharedDirection,You both point strongly toward {dim}. Feeling this matters to both of you — a shared foundation to build on.
+narrative.sharedDirectionNone,Your compasses lean in different directions — a rich starting point for a conversation.
+narrative.differentFocus,{name} leans more toward {dim}. Two different ways of building wealth — and a good conversation to have.
+narrative.differentFocusNone,You share a similar spread across most directions.
+narrative.closing,What kind of financial future are we building together?
+threshold.sharedMinScore,70
+threshold.differenceMinScore,25

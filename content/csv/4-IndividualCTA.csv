@@ -1,0 +1,48 @@
+key,text
+reveal.eyebrowTemplate,"{name}, this is"
+reveal.headline,Your Wealth Compass
+reveal.summaryTemplate,Your compass points most strongly toward {top3}. This is what your financial decisions naturally work toward.
+reveal.button,Explore my Compass
+compass.eyebrow,Your directions
+compass.headline,Where your compass points
+compass.exploreHint,Tap any direction to see what it means for you.
+compass.exploreButton,See what this means
+compass.insightsEyebrow,Making sense of it
+compass.insightsHeadline,What your compass suggests
+compass.insightsButton,See how you navigate
+compass.tier1,Primary
+compass.tier2,Supporting
+compass.tier3,Quieter
+navigation.eyebrow,How you navigate
+navigation.headline,Your Navigation Preferences
+navigation.subhead,Everyone is a blend of all five. Here's where you naturally lean.
+navigation.caption,"The higher the line, the more you naturally lean that way"
+navigation.exploreHint,Tap any preference to explore how it shows up.
+navigation.exploreButton,See what this means for you
+navigation.insightsEyebrow,Recommendations & insights
+navigation.insightsHeadline,How this plays out
+navigation.insightsButton,Go to my reports
+reports.eyebrow,Keep & share
+reports.headline,Your reports
+reports.item1.title,My Wealth Compass
+reports.item1.desc,"Your 8 directions, narrative & next steps"
+reports.item2.title,My Navigation Preferences
+reports.item2.desc,How you naturally approach money decisions
+reports.actionEyebrow,One last step
+reports.actionCta,See my action list ›
+reports.actionCtaNote,"A short, practical list you can work through in your own time."
+actionList.eyebrow,Your action list
+actionList.headline,A few first steps
+actionList.subhead,"Small, practical moves drawn from your compass. Tick them off as you go — it's saved for whenever you come back."
+actionList.homeLink,View my action list ›
+actionList.doneAll,That's the list. Come back any time to revisit it.
+actionList.progressTemplate,{done} of {total} done
+conversation.eyebrow,Conversation Cards
+conversation.headline,Conversation starters
+conversation.subhead,Swipe through and talk them over — there are no right answers.
+conversation.goDeeper,Had some good conversations? Now discover why you each decide the way you do.
+conversation.goDeeperButton,Ready to go deeper — take the assessment ›
+calculating.main,Finding your natural direction…
+calculating.rotating1,Reading your Compass…
+calculating.rotating2,Mapping how you navigate…
+calculating.rotating3,Preparing your insights…

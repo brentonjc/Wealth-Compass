@@ -1,0 +1,347 @@
+{
+  "brand": {
+    "name": "Wealth Compass™",
+    "positioning": "Understand the money decisions you make — and the future you're building together.",
+    "promise": "Discover your direction. Understand your partner's. Build a shared financial future together.",
+    "recurringQuestion": "What kind of financial future are we building together?"
+  },
+  "toneRules": {
+    "never": [
+      "personality",
+      "strength",
+      "weakness",
+      "right",
+      "wrong",
+      "good",
+      "bad",
+      "must",
+      "should",
+      "spender",
+      "saver",
+      "risk-taker"
+    ],
+    "prefer": [
+      "your compass naturally points towards…",
+      "you tend to prioritise…",
+      "you may wish to explore…",
+      "together you can…",
+      "your shared direction suggests…"
+    ]
+  },
+  "screens": {
+    "home": {
+      "headline": "Discover your financial direction",
+      "subhead": "Understand the money decisions you make — and the future you're building.",
+      "primary": "Take the assessment",
+      "secondary": "💬 Start with conversations",
+      "reportsLink": "See my reports",
+      "helper": "Not sure? Begin with a few conversations, then dive into the full assessment whenever you're ready.",
+      "partnerLink": "Partner already finished? Add their Compass ›"
+    },
+    "welcome": {
+      "eyebrow": "Before we begin",
+      "headline": "Your money, from two angles.",
+      "subhead": "You'll take two short steps. Each shows something different — and it's where they meet that the real insight lives.",
+      "steps": [
+        {
+          "icon": "🧭",
+          "label": "Step 1 · Your Compass",
+          "title": "How you think & feel",
+          "body": "What you value and prioritise when money is on the line.",
+          "accent": "primary"
+        },
+        {
+          "icon": "🧩",
+          "label": "Step 2 · Your Navigation",
+          "title": "How you act",
+          "body": "The way you actually plan, decide and manage day to day.",
+          "accent": "teal"
+        }
+      ],
+      "insight": "Where these two overlap is where the insight is — how what you feel lines up with what you do.",
+      "button": "Show me how"
+    },
+    "safety": {
+      "eyebrow": "Private by design",
+      "headline": "This stays yours.",
+      "subhead": "A few things worth knowing before you start.",
+      "cards": [
+        {
+          "icon": "🔒",
+          "title": "Encrypted & private.",
+          "body": "Your answers are encrypted on your device — we can't read them."
+        },
+        {
+          "icon": "🧭",
+          "title": "No direction is better than another.",
+          "body": "Every direction brings trade-offs. This is never about being good or bad with money."
+        },
+        {
+          "icon": "🤝",
+          "title": "Shared only if you choose.",
+          "body": "Nothing reaches your partner unless you decide to send it."
+        }
+      ],
+      "button": "I'm ready"
+    },
+    "about": {
+      "headline": "Let's start with you.",
+      "subhead": "Just enough to make this yours.",
+      "nameLabel": "What should we call you?",
+      "namePlaceholder": "Your first name",
+      "seasonLabel": "Which season of life are you in? (optional)",
+      "seasons": [
+        "Building & exploring",
+        "Growing a family",
+        "Established & evolving",
+        "Rethinking what's next"
+      ],
+      "modeLabel": "Are you exploring this…",
+      "modes": [
+        "Just for me",
+        "With my partner"
+      ],
+      "button": "Continue"
+    },
+    "calculating": {
+      "main": "Finding your natural direction…",
+      "rotating": [
+        "Reading your Compass…",
+        "Mapping how you navigate…",
+        "Preparing your insights…"
+      ]
+    },
+    "reveal": {
+      "eyebrowTemplate": "{name}, this is",
+      "headline": "Your Wealth Compass",
+      "summaryTemplate": "Your compass points most strongly toward {top3}. This is what your financial decisions naturally work toward.",
+      "button": "Explore my Compass"
+    },
+    "compassResult": {
+      "eyebrow": "Your directions",
+      "headline": "Where your compass points",
+      "exploreHint": "Tap any direction to see what it means for you.",
+      "exploreButton": "See what this means",
+      "insightsEyebrow": "Making sense of it",
+      "insightsHeadline": "What your compass suggests",
+      "insightsButton": "See how you navigate",
+      "tiers": [
+        "Primary",
+        "Supporting",
+        "Quieter"
+      ]
+    },
+    "navigationResult": {
+      "eyebrow": "How you navigate",
+      "headline": "Your Navigation Preferences",
+      "subhead": "Everyone is a blend of all five. Here's where you naturally lean.",
+      "caption": "The higher the line, the more you naturally lean that way",
+      "exploreHint": "Tap any preference to explore how it shows up.",
+      "exploreButton": "See what this means for you",
+      "insightsEyebrow": "Recommendations & insights",
+      "insightsHeadline": "How this plays out",
+      "insightsButton": "Go to my reports"
+    },
+    "conversation": {
+      "eyebrow": "Conversation Cards",
+      "headline": "Conversation starters",
+      "subhead": "Swipe through and talk them over — there are no right answers.",
+      "goDeeper": "Had some good conversations? Now discover why you each decide the way you do.",
+      "goDeeperButton": "Ready to go deeper — take the assessment ›"
+    },
+    "reports": {
+      "eyebrow": "Keep & share",
+      "headline": "Your reports",
+      "items": [
+        {
+          "icon": "🧭",
+          "title": "My Wealth Compass",
+          "desc": "Your 8 directions, narrative & next steps"
+        },
+        {
+          "icon": "📊",
+          "title": "My Navigation Preferences",
+          "desc": "How you naturally approach money decisions"
+        }
+      ],
+      "partnerEyebrow": "For your partner",
+      "partnerHeadline": "Invite your partner to take theirs.",
+      "partnerBody": "Choose a shared passphrase, then send your partner the code below. When they finish, you'll both unlock Our Shared Compass.",
+      "partnerBodyFile": "Choose a shared passphrase, then download your encrypted Compass and send the file to your partner. When they open it with the passphrase, you'll both unlock Our Shared Compass.",
+      "shareFileButton": "Download my Compass to share",
+      "shareFileNote": "🔒 Encrypted on your device with your passphrase — only your partner can open it.",
+      "passphrasePlaceholder": "Choose a passphrase you'll both remember",
+      "shareCodeLabel": "Your share code",
+      "copyButton": "Copy link",
+      "encryptionNote": "🔒 Encrypted on your device before it's saved — we can't read it.",
+      "fileFallback": "or download an encrypted file instead",
+      "lockedTitle": "Our Shared Compass",
+      "lockedDesc": "Unlocks when your partner completes theirs",
+      "actionEyebrow": "One last step",
+      "actionCta": "See my action list ›",
+      "actionCtaNote": "A short, practical list you can work through in your own time."
+    },
+    "actionList": {
+      "eyebrow": "Your action list",
+      "headline": "A few first steps",
+      "subhead": "Small, practical moves drawn from your compass. Tick them off as you go — it's saved for whenever you come back.",
+      "homeLink": "View my action list ›",
+      "doneAll": "That's the list. Come back any time to revisit it.",
+      "progressTemplate": "{done} of {total} done"
+    },
+    "partnerJoin": {
+      "eyebrow": "Two compasses",
+      "headline": "Add your partner's Compass",
+      "subhead": "Enter the share code they sent you, then take your own journey. At the end, you'll both see your Shared Compass.",
+      "subheadFile": "Enter the shared passphrase, then choose the Compass file your partner sent you. You'll unlock it here, then take your own journey — at the end, you'll both see your Shared Compass.",
+      "fileButton": "Choose their Compass file",
+      "codeLabel": "Share code",
+      "codePlaceholder": "e.g. K7QM",
+      "passphraseLabel": "Shared passphrase",
+      "passphrasePlaceholder": "The word you agreed on together",
+      "encryptionNote": "🔒 Their Compass is only unlocked on this device — the passphrase decrypts it.",
+      "fallback": "No code? Upload their file instead",
+      "button": "Unlock & begin my journey"
+    },
+    "shared": {
+      "eyebrowTemplate": "{name} & {partner}",
+      "headline": "Our Shared Compass",
+      "directionLabel": "Shared Direction",
+      "focusLabel": "Different Areas of Focus",
+      "sections": [
+        "Shared Direction",
+        "Complementary Perspectives",
+        "Different Areas of Focus",
+        "Opportunities for Alignment",
+        "Shared Path Forward"
+      ],
+      "button": "View Our Shared Compass"
+    }
+  },
+  "sharedNarratives": {
+    "sharedDirection": "You both point strongly toward {dim}. Feeling this matters to both of you — a shared foundation to build on.",
+    "sharedDirectionNone": "Your compasses lean in different directions — a rich starting point for a conversation.",
+    "differentFocus": "{name} leans more toward {dim}. Two different ways of building wealth — and a good conversation to have.",
+    "differentFocusNone": "You share a similar spread across most directions.",
+    "closing": "What kind of financial future are we building together?",
+    "thresholds": {
+      "sharedMin": 70,
+      "differenceMin": 25
+    }
+  },
+  "compassNarratives": {
+    "security": {
+      "leads": "You make decisions that create safety and reduce worry.",
+      "explore": "You may wish to explore how a little long-term investing could quietly fund the security you value.",
+      "reflection": "When keeping money safe and enjoying it today pull in different directions, which do you tend to follow?",
+      "nextStep": "Set a target for your emergency fund, then automate a small monthly transfer toward it."
+    },
+    "freedom": {
+      "leads": "You tend to prioritise choice, flexibility and keeping your options open.",
+      "explore": "You may wish to explore which commitments actually buy you more freedom over time.",
+      "reflection": "Where does having more options genuinely make you feel freer — and where does it just add noise?",
+      "nextStep": "List the fixed costs that most limit your choices, and pick one to reduce this quarter."
+    },
+    "growth": {
+      "leads": "Your decisions lean toward building wealth and thinking long term.",
+      "explore": "You may wish to explore how much certainty you'd trade for the returns you're aiming at.",
+      "reflection": "When does patience serve your growth — and when does it become waiting for the perfect moment?",
+      "nextStep": "Review where your long-term money sits and whether it matches your time horizon."
+    },
+    "experiences": {
+      "leads": "You tend to prioritise enjoying life today and creating memories.",
+      "explore": "You may wish to explore a simple 'joy budget' so spending on experiences feels free of second-guessing.",
+      "reflection": "Which experiences have been most worth the money — and what did they have in common?",
+      "nextStep": "Ring-fence a small monthly amount purely for experiences, guilt-free."
+    },
+    "connection": {
+      "leads": "Your spending and giving naturally centre on family and the people closest to you.",
+      "explore": "You may wish to explore how looking after yourself first can help you support others for longer.",
+      "reflection": "When supporting others and your own security pull apart, how do you decide?",
+      "nextStep": "Agree a giving or family-support figure in advance, so it's a choice rather than a pull."
+    },
+    "purpose": {
+      "leads": "You tend to prioritise money that reflects your values and contributes to something meaningful.",
+      "explore": "You may wish to explore how to make purposeful spending sustainable alongside your own needs.",
+      "reflection": "What would it look like for your money to fully reflect what you care about?",
+      "nextStep": "Choose one cause or value to fund intentionally this year, however small."
+    },
+    "legacy": {
+      "leads": "You think ahead to future generations and what you'll leave behind.",
+      "explore": "You may wish to explore the practical steps — a will, beneficiaries — that make a legacy real.",
+      "reflection": "What do you most want money to make possible for the people who come after you?",
+      "nextStep": "Check that your will and beneficiary details reflect your current wishes."
+    },
+    "balance": {
+      "leads": "You aim to live well today while still planning for tomorrow.",
+      "explore": "You may wish to explore where a clearer plan would let you enjoy today with less doubt.",
+      "reflection": "Where does 'balance' feel genuine — and where might it be avoiding a harder choice?",
+      "nextStep": "Split your saving into a 'today' pot and a 'tomorrow' pot so both are visible."
+    }
+  },
+  "navigationNarratives": {
+    "structured": {
+      "leads": "You feel most at home planning ahead — but you flex through all five as situations change.",
+      "decide": "You naturally prefer to plan ahead and understand your options before deciding. You feel most at ease with organised systems and time to think.",
+      "withOthers": "A partner who leans Adaptive may want to decide more quickly than feels comfortable to you. Agreeing when a decision needs a plan and when it's fine to move fast can help you both."
+    },
+    "adaptive": {
+      "leads": "You feel most at home adjusting as you go — comfortable changing course when circumstances shift.",
+      "decide": "You naturally prefer to stay flexible and respond to what's in front of you rather than lock everything in.",
+      "withOthers": "A partner who leans Structured may want more of a plan than feels natural to you. Agreeing a few fixed points, with room to flex around them, can help you both."
+    },
+    "reflective": {
+      "leads": "You feel most at home understanding your options fully before deciding.",
+      "decide": "You naturally prefer to research and weigh things up, so your decisions feel well-founded.",
+      "withOthers": "A partner who leans Intuitive may want to move on gut feel. Agreeing which decisions are worth the research can help you both."
+    },
+    "collaborative": {
+      "leads": "You feel most at home deciding together and talking things through.",
+      "decide": "You naturally prefer to involve others and reach decisions by discussion.",
+      "withOthers": "A partner who leans Intuitive or Structured may sometimes want to decide alone. Agreeing which choices are shared and which are each of yours can help you both."
+    },
+    "intuitive": {
+      "leads": "You feel most at home keeping money simple and trusting your instincts.",
+      "decide": "You naturally prefer light-touch systems and quick decisions over detailed analysis.",
+      "withOthers": "A partner who leans Reflective may want more information before deciding. Agreeing when a quick call is fine and when it's worth a closer look can help you both."
+    }
+  },
+  "conversationCards": {
+    "Security": [
+      "What does financial security mean to you?",
+      "When do you feel most financially safe?",
+      "What would 'enough' in the bank look like for you?",
+      "What money worry sits quietest in the back of your mind?"
+    ],
+    "Spending & Enjoying": [
+      "When do you feel most comfortable spending money?",
+      "How should we decide what's worth spending money on?",
+      "What's a purchase you've never regretted?",
+      "Where do you find it hardest to spend, even when you can?"
+    ],
+    "Dreams & Goals": [
+      "What financial goal are you most proud of?",
+      "If we had an extra $50,000 tomorrow, what would you want to do with it?",
+      "What does financial freedom look like for you?",
+      "What's one thing you'd love our money to make possible in five years?"
+    ],
+    "Money Habits": [
+      "What financial habits did you learn growing up?",
+      "What's one money habit you'd like to change?",
+      "How often do you like to check in on money?",
+      "What money task do you always put off?"
+    ],
+    "Giving": [
+      "What does generosity mean to you?",
+      "Who or what would you love to be able to support?",
+      "How do you feel when we give money away?",
+      "Is there a cause you'd want our money to stand behind?"
+    ],
+    "Legacy": [
+      "What kind of financial legacy do you hope we leave?",
+      "What do you want money to make possible for the people after us?",
+      "What did the generation before us teach us about money — for better or worse?",
+      "What would you want our children to learn about money from us?"
+    ]
+  }
+}

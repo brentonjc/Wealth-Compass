@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wealth Compass™ — PDF Report Mockups</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#F6F9FC; --card:#FFFFFF; --card2:#F0F3F9; --line:rgba(10,37,64,.10);
+    --primary:#5851E8; --primarybright:#635BFF; --purple:#6C63E0; --purplelight:#8B85FF;
+    --text:#0A2540; --muted:#5A6B85; --success:#0F9E73;
+    --ink:#111B34; --textdark:#EAF0FA;
+    --orange:#FF8A3D; --aqua:#57E0D0;
+  }
+  *{ box-sizing:border-box; }
+  body{ background:#E7ECF3; font-family:'DM Sans',system-ui,sans-serif; color:var(--text); margin:0; padding:0 0 60px; }
+
+  header.review{ max-width:760px; margin:0 auto; padding:44px 20px 8px; }
+  .review .kick{ font-size:11px; letter-spacing:.25em; text-transform:uppercase; color:var(--muted); }
+  .review h1{ font-family:'Sora'; font-weight:600; font-size:34px; color:var(--text); margin:6px 0 0; }
+  .review p{ color:var(--muted); line-height:1.6; max-width:640px; }
+
+  .doc-label{ max-width:720px; margin:40px auto 10px; padding:0 8px; }
+  .doc-label .tag{ display:inline-block; font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--primary); background:#EDECFC; padding:5px 12px; border-radius:999px; }
+  .doc-label .note{ color:var(--muted); font-size:13px; margin-top:6px; }
+
+  /* A4 portrait page: 210×297mm ≈ 720 × 1018 at this scale */
+  .page{
+    width:720px; min-height:1018px; background:var(--card); margin:0 auto 26px;
+    box-shadow:0 10px 44px rgba(10,37,64,.16); border-radius:6px; overflow:hidden;
+    display:flex; flex-direction:column; position:relative;
+  }
+
+  /* branded header band */
+  .band{ background:linear-gradient(118deg,#5851E8 0%,#4A43C9 55%,#3A339E 100%); color:#fff; padding:38px 52px 30px; position:relative; overflow:hidden; }
+  .band .lock{ display:flex; align-items:center; gap:10px; }
+  .band .wordmark{ font-family:'Sora'; font-weight:600; font-size:15px; letter-spacing:.2px; }
+  .band .rtype{ position:absolute; top:40px; right:52px; font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:rgba(255,255,255,.7); }
+  .band h2{ font-family:'Sora'; font-weight:700; font-size:34px; margin:26px 0 0; line-height:1.1; }
+  .band .who{ margin-top:8px; color:rgba(255,255,255,.8); font-size:14px; }
+  .band .shape1{ position:absolute; top:-40px; right:-30px; width:180px; height:180px; border-radius:50%; background:radial-gradient(circle,rgba(139,133,255,.5),transparent 70%); }
+
+  .body{ padding:34px 52px; flex:1; }
+  .foot{ padding:16px 52px; border-top:1px solid var(--line); display:flex; justify-content:space-between; font-size:11px; color:var(--muted); }
+
+  .eyebrow{ font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--primary); font-weight:600; }
+  h3.sec-h{ font-family:'Sora'; font-weight:600; font-size:20px; margin:6px 0 14px; color:var(--text); }
+  .lead{ font-family:'Sora'; font-weight:500; font-size:17px; line-height:1.5; color:var(--text); }
+  p.body-t{ font-size:14px; line-height:1.65; color:var(--muted); }
+  .mono{ font-family:'DM Mono',monospace; }
+
+  .card{ background:var(--bg); border:1px solid var(--line); border-radius:14px; padding:22px 24px; }
+  .dark{ background:var(--ink); color:var(--textdark); border-radius:14px; padding:22px 24px; }
+  .dark .eyebrow{ color:var(--purplelight); }
+  .dark .lead{ color:var(--textdark); }
+  .dark p{ color:rgba(234,240,250,.72); }
+  .accentL{ border-left:4px solid var(--primary); }
+  .accentP{ border-left:4px solid var(--purple); }
+
+  .bars > div{ margin-bottom:12px; }
+  .bar-top{ display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px; }
+  .bar-top .nm{ font-weight:500; color:var(--text); }
+  .bar-top .tier{ color:var(--muted); }
+  .track{ height:9px; border-radius:99px; background:#E3E8F1; overflow:hidden; }
+  .fill{ height:100%; border-radius:99px; background:var(--primary); }
+
+  ul.clean{ list-style:none; margin:0; padding:0; }
+  ul.clean li{ position:relative; padding-left:26px; margin-bottom:11px; font-size:14px; line-height:1.55; color:var(--text); }
+  ul.clean li::before{ content:""; position:absolute; left:0; top:7px; width:9px; height:9px; border-radius:3px; background:var(--primary); }
+  ul.reflect li{ font-family:'Sora'; font-weight:500; color:var(--text); font-size:15px; }
+  ul.reflect li::before{ background:var(--orange); border-radius:50%; }
+
+  .plan-row{ display:flex; gap:16px; padding:14px 0; border-bottom:1px solid var(--line); }
+  .plan-row:last-child{ border-bottom:none; }
+  .plan-when{ flex:0 0 116px; font-family:'DM Mono',monospace; font-size:12px; color:var(--primary); padding-top:2px; }
+  .plan-what{ font-size:14px; line-height:1.55; color:var(--text); }
+
+  .legend{ display:flex; gap:22px; font-size:13px; color:var(--muted); margin-top:12px; justify-content:center; }
+  .legend .dot{ display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:7px; vertical-align:middle; }
+
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .quote{ font-family:'Sora'; font-weight:500; font-size:15px; color:var(--text); }
+</style>
+</head>
+<body>
+
+<header class="review">
+  <p class="kick">PDF report mockups · A4 portrait · For review before build</p>
+  <h1>Wealth Compass™ — The Reports</h1>
+  <p>Page-accurate mockups of the three downloadable PDFs, in the app's design language. In the build these are generated with jsPDF + html2canvas, personalised per person. Example profile: <strong>Sarah</strong> (Security &amp; Connection leading) and partner <strong>James</strong> (Growth leaning).</p>
+</header>
+
+
+<!-- ============================================================= -->
+<!-- REPORT 1 · MY WEALTH COMPASS ================================ -->
+<!-- ============================================================= -->
+<div class="doc-label"><span class="tag">Report 1 · My Wealth Compass</span><p class="note">Page 1 of 2 — cover, Compass Rose, and your eight directions.</p></div>
+
+<div class="page">
+  <div class="band">
+    <div class="shape1"></div>
+    <div class="lock">
+      <svg viewBox="0 0 120 40" width="66" height="22" style="overflow:visible"><defs><clipPath id="w1"><rect width="120" height="40"/></clipPath></defs><g clip-path="url(#w1)"><path d="M0,20 C10,6 26,6 36,20 C46,34 62,34 72,20 C82,6 98,6 108,20 C118,34 134,34 144,20" fill="none" stroke="#FF8A3D" stroke-width="4" stroke-linecap="round"/><path d="M0,20 C10,34 26,34 36,20 C46,6 62,6 72,20 C82,34 98,34 108,20 C118,6 134,6 144,20" fill="none" stroke="#57E0D0" stroke-width="4" stroke-linecap="round"/></g></svg>
+      <span class="wordmark">Wealth Compass™</span>
+    </div>
+    <span class="rtype">Personal report</span>
+    <h2>My Wealth Compass</h2>
+    <p class="who">Sarah · Prepared 6 July 2026</p>
+  </div>
+
+  <div class="body">
+    <p class="lead" style="margin-top:0">What direction does your financial compass naturally point?</p>
+    <p class="body-t" style="margin-top:6px">Your Compass shows the financial outcomes you naturally prioritise. There are no right or wrong directions — just yours. Here's how it reads.</p>
+
+    <div style="display:flex; justify-content:center; margin:18px 0 6px"><canvas id="pdfRadar1" width="380" height="380"></canvas></div>
+
+    <div class="card" style="margin-top:14px">
+      <p class="eyebrow">Your directions</p>
+      <div class="bars" style="margin-top:14px">
+        <div><div class="bar-top"><span class="nm">🛡 Security</span><span class="tier">Primary</span></div><div class="track"><div class="fill" style="width:90%"></div></div></div>
+        <div><div class="bar-top"><span class="nm">❤️ Connection</span><span class="tier">Primary</span></div><div class="track"><div class="fill" style="width:84%"></div></div></div>
+        <div><div class="bar-top"><span class="nm">✨ Experiences</span><span class="tier">Supporting</span></div><div class="track"><div class="fill" style="width:70%;opacity:.8"></div></div></div>
+        <div><div class="bar-top"><span class="nm">⚖️ Balance</span><span class="tier">Supporting</span></div><div class="track"><div class="fill" style="width:62%;opacity:.8"></div></div></div>
+        <div><div class="bar-top"><span class="nm">🕊 Freedom</span><span class="tier">Present</span></div><div class="track"><div class="fill" style="width:55%;opacity:.6"></div></div></div>
+        <div><div class="bar-top"><span class="nm">🎯 Purpose</span><span class="tier">Present</span></div><div class="track"><div class="fill" style="width:50%;opacity:.6"></div></div></div>
+        <div><div class="bar-top"><span class="nm">📈 Growth</span><span class="tier">Quieter</span></div><div class="track"><div class="fill" style="width:42%;opacity:.45"></div></div></div>
+        <div><div class="bar-top"><span class="nm">🌳 Legacy</span><span class="tier">Quieter</span></div><div class="track"><div class="fill" style="width:38%;opacity:.45"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>Wealth Compass™ · Sarah</span><span>Page 1 of 2</span></div>
+</div>
+
+
+<div class="doc-label"><span class="tag">Report 1 · My Wealth Compass</span><p class="note">Page 2 of 2 — what it means, an area to explore, reflections, and practical next steps.</p></div>
+
+<div class="page">
+  <div class="body" style="padding-top:44px">
+    <p class="eyebrow">What this means</p>
+    <div class="dark" style="margin-top:10px">
+      <p class="lead">You tend to make money decisions that create safety and look after the people you love.</p>
+      <p style="font-size:14px; line-height:1.65; margin:10px 0 0">With <strong style="color:#fff">Security</strong> and <strong style="color:#fff">Connection</strong> leading your compass, you're drawn to choices that reduce worry and support your family — a steady foundation others rely on.</p>
+    </div>
+
+    <div class="grid2" style="margin-top:16px">
+      <div class="card">
+        <p class="eyebrow">🛡 When Security leads</p>
+        <p class="body-t" style="margin-top:8px">You make money decisions that protect you first. Stability and a buffer against the unexpected matter more than chasing the highest return.</p>
+      </div>
+      <div class="card">
+        <p class="eyebrow">❤️ When Connection leads</p>
+        <p class="body-t" style="margin-top:8px">Your spending and giving naturally centre on family and the people closest to you — that's where money feels most meaningful.</p>
+      </div>
+    </div>
+
+    <div class="card accentL" style="margin-top:16px">
+      <p class="eyebrow">An area to explore</p>
+      <p class="body-t" style="margin-top:8px; color:var(--text)">Growth sits quieter on your compass right now. You may wish to explore how a little long-term investing could quietly fund the security and experiences you value most.</p>
+    </div>
+
+    <h3 class="sec-h" style="margin-top:26px">Worth reflecting on</h3>
+    <ul class="clean reflect">
+      <li>How much is “enough” safety — before it starts holding other parts of your life back?</li>
+      <li>Are you as generous with your own future as you are with the people around you?</li>
+      <li>When keeping money safe and enjoying it today pull in different directions, which do you tend to follow?</li>
+    </ul>
+
+    <h3 class="sec-h" style="margin-top:24px">A few practical next steps</h3>
+    <ul class="clean">
+      <li>Name the amount that would let you feel genuinely secure — then decide what the money beyond that line is free to do.</li>
+      <li>Add yourself to the list: set aside a little for your own goals before you give or support, so both can last.</li>
+      <li>Explore one small, automatic long-term investment to quietly fund the security and experiences you value.</li>
+    </ul>
+
+    <div class="card" style="margin-top:24px; text-align:center; background:#EDECFC; border-color:transparent">
+      <p class="quote" style="margin:0">“What kind of financial future are you building — and does your money point that way?”</p>
+    </div>
+  </div>
+  <div class="foot"><span>Wealth Compass™ · Sarah</span><span>Page 2 of 2</span></div>
+</div>
+
+
+<!-- ============================================================= -->
+<!-- REPORT 2 · MY NAVIGATION PREFERENCES ======================== -->
+<!-- ============================================================= -->
+<div class="doc-label"><span class="tag">Report 2 · My Navigation Preferences</span><p class="note">Single page — how you naturally approach money decisions.</p></div>
+
+<div class="page">
+  <div class="band" style="background:linear-gradient(118deg,#3F38C4 0%,#2E2A8F 60%,#221E6E 100%)">
+    <div class="shape1"></div>
+    <div class="lock">
+      <svg viewBox="0 0 120 40" width="66" height="22" style="overflow:visible"><defs><clipPath id="w2"><rect width="120" height="40"/></clipPath></defs><g clip-path="url(#w2)"><path d="M0,20 C10,6 26,6 36,20 C46,34 62,34 72,20 C82,6 98,6 108,20 C118,34 134,34 144,20" fill="none" stroke="#FF8A3D" stroke-width="4" stroke-linecap="round"/><path d="M0,20 C10,34 26,34 36,20 C46,6 62,6 72,20 C82,34 98,34 108,20 C118,6 134,6 144,20" fill="none" stroke="#57E0D0" stroke-width="4" stroke-linecap="round"/></g></svg>
+      <span class="wordmark">Wealth Compass™</span>
+    </div>
+    <span class="rtype">Personal report</span>
+    <h2>My Navigation Preferences</h2>
+    <p class="who">Sarah · Prepared 6 July 2026</p>
+  </div>
+
+  <div class="body">
+    <p class="lead" style="margin-top:0">How you naturally approach financial decisions.</p>
+    <p class="body-t" style="margin-top:6px">These are preferences, not a fixed type — you're a blend of all five, and you flex between them as situations change. Here's where you naturally lean.</p>
+
+    <div class="card" style="margin-top:16px; padding-top:24px">
+      <div style="display:flex; justify-content:space-between; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:2px"><span>How you navigate, step by step</span><span style="color:var(--primary)">Higher = stronger lean</span></div>
+      <svg viewBox="0 0 360 252" style="width:100%">
+        <defs><linearGradient id="navLine" gradientUnits="userSpaceOnUse" x1="40" y1="0" x2="320" y2="0"><stop offset="0" stop-color="#5851E8"/><stop offset="0.25" stop-color="#2CA6A4"/><stop offset="0.5" stop-color="#6C63E0"/><stop offset="0.75" stop-color="#E3A94B"/><stop offset="1" stop-color="#17A673"/></linearGradient></defs>
+        <g stroke="#EEF1F7" stroke-width="1"><line x1="24" y1="48" x2="336" y2="48"/><line x1="24" y1="128" x2="336" y2="128"/><line x1="24" y1="208" x2="336" y2="208"/></g>
+        <path d="M40,62 C75,62 75,138 110,138 C145,138 145,77 180,77 C215,77 215,106 250,106 C285,106 285,163 320,163 L320,208 L40,208 Z" fill="rgba(88,81,232,.05)"/>
+        <path d="M40,62 C75,62 75,138 110,138 C145,138 145,77 180,77 C215,77 215,106 250,106 C285,106 285,163 320,163" fill="none" stroke="#0A2540" stroke-opacity="0.06" stroke-width="7" stroke-linecap="round" transform="translate(0,5)"/>
+        <path d="M40,62 C75,62 75,138 110,138 C145,138 145,77 180,77 C215,77 215,106 250,106 C285,106 285,163 320,163" fill="none" stroke="url(#navLine)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <g font-size="14" text-anchor="middle"><text x="40" y="46">📋</text><text x="110" y="122">🌊</text><text x="180" y="61">🔍</text><text x="250" y="90">🤝</text><text x="320" y="147">🌿</text></g>
+        <g><circle cx="40" cy="62" r="7" fill="#5851E8"/><circle cx="40" cy="62" r="3" fill="#fff"/><circle cx="110" cy="138" r="7" fill="#2CA6A4"/><circle cx="110" cy="138" r="3" fill="#fff"/><circle cx="180" cy="77" r="7" fill="#6C63E0"/><circle cx="180" cy="77" r="3" fill="#fff"/><circle cx="250" cy="106" r="7" fill="#E3A94B"/><circle cx="250" cy="106" r="3" fill="#fff"/><circle cx="320" cy="163" r="7" fill="#17A673"/><circle cx="320" cy="163" r="3" fill="#fff"/></g>
+        <g font-family="'DM Sans',sans-serif" font-size="10.5" font-weight="500" fill="#3A4A63" text-anchor="middle"><text x="40" y="234">Structured</text><text x="110" y="234">Adaptive</text><text x="180" y="234">Reflective</text><text x="250" y="234">Collaborative</text><text x="320" y="234">Intuitive</text></g>
+        <g font-family="'DM Sans',sans-serif" font-size="9" fill="#8A97AC" text-anchor="middle"><text x="40" y="247">Often</text><text x="110" y="247">Sometimes</text><text x="180" y="247">Often</text><text x="250" y="247">Sometimes</text><text x="320" y="247">Rarely</text></g>
+      </svg>
+    </div>
+
+    <div class="dark" style="margin-top:16px">
+      <p class="eyebrow">How you tend to decide</p>
+      <p style="font-size:14px; line-height:1.65; margin:8px 0 0">You naturally prefer to plan ahead and understand your options before deciding. You feel most at ease with organised systems and time to think. In fast-moving moments, borrowing a little from your Adaptive side may also help.</p>
+    </div>
+
+    <div class="card accentP" style="margin-top:16px">
+      <p class="eyebrow" style="color:var(--purple)">Working with a different preference</p>
+      <p class="body-t" style="margin-top:8px; color:var(--text)">A partner who leans Adaptive may want to decide more quickly than feels comfortable to you. Agreeing which decisions need research and which are fine to move on quickly can help you both.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Wealth Compass™ · Sarah</span><span>Page 1 of 1</span></div>
+</div>
+
+
+<!-- ============================================================= -->
+<!-- REPORT 3 · OUR SHARED COMPASS =============================== -->
+<!-- ============================================================= -->
+<div class="doc-label"><span class="tag">Report 3 · Our Shared Compass</span><p class="note">Page 1 of 2 — both compasses, where you align, where you differ.</p></div>
+
+<div class="page">
+  <div class="band" style="background:linear-gradient(118deg,#5851E8 0%,#4A43C9 45%,#C96F4A 140%)">
+    <div class="shape1"></div>
+    <div class="lock">
+      <svg viewBox="0 0 120 40" width="66" height="22" style="overflow:visible"><defs><clipPath id="w3"><rect width="120" height="40"/></clipPath></defs><g clip-path="url(#w3)"><path d="M0,20 C10,6 26,6 36,20 C46,34 62,34 72,20 C82,6 98,6 108,20 C118,34 134,34 144,20" fill="none" stroke="#FF8A3D" stroke-width="4" stroke-linecap="round"/><path d="M0,20 C10,34 26,34 36,20 C46,6 62,6 72,20 C82,34 98,34 108,20 C118,6 134,6 144,20" fill="none" stroke="#57E0D0" stroke-width="4" stroke-linecap="round"/></g></svg>
+      <span class="wordmark">Wealth Compass™</span>
+    </div>
+    <span class="rtype">Shared report</span>
+    <h2>Our Shared Compass</h2>
+    <p class="who">Sarah &amp; James · Prepared 6 July 2026</p>
+  </div>
+
+  <div class="body">
+    <p class="lead" style="margin-top:0">What kind of financial future are we building together?</p>
+    <p class="body-t" style="margin-top:6px">Two compasses rarely point exactly the same way — and that's the point. Where you align is your foundation; where you differ is where the interesting conversations live.</p>
+
+    <div style="display:flex; justify-content:center; margin:16px 0 4px"><canvas id="pdfRadarShared" width="380" height="380"></canvas></div>
+    <div class="legend"><span><span class="dot" style="background:#635BFF"></span>Sarah</span><span><span class="dot" style="background:#8B85FF"></span>James</span></div>
+
+    <div class="card" style="margin-top:20px; border-left:4px solid var(--primary)">
+      <p class="eyebrow">Shared Direction</p>
+      <p class="body-t" style="margin-top:8px; color:var(--text)">You both point strongly toward <strong>Security</strong>. Feeling financially safe matters to both of you — a strong, shared foundation to build everything else on.</p>
+    </div>
+
+    <div class="card" style="margin-top:14px; border-left:4px solid #C96F4A">
+      <p class="eyebrow" style="color:#C96F4A">Different Areas of Focus</p>
+      <p class="body-t" style="margin-top:8px; color:var(--text)">Sarah leans toward <strong>Connection</strong>; James toward <strong>Growth</strong>. Neither is better — they're two ways of building the same rich life. One tends the relationships, the other tends the long game.</p>
+    </div>
+
+    <div class="card" style="margin-top:14px; background:#EDF7F2; border-color:transparent">
+      <p class="eyebrow" style="color:var(--success)">Complementary Perspectives</p>
+      <p class="body-t" style="margin-top:8px; color:var(--text)">Together your instincts cover more ground than either would alone — Sarah keeps the present warm and connected, James keeps the future growing. Used on purpose, that's a genuine advantage.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Wealth Compass™ · Sarah &amp; James</span><span>Page 1 of 2</span></div>
+</div>
+
+
+<div class="doc-label"><span class="tag">Report 3 · Our Shared Compass</span><p class="note">Page 2 of 2 — opportunities, conversations, a check-in agenda, and a 90-day plan.</p></div>
+
+<div class="page">
+  <div class="body" style="padding-top:44px">
+    <h3 class="sec-h">Opportunities for Alignment</h3>
+    <ul class="clean">
+      <li>Agree a shared “safety baseline” you both feel good about — then give each of your leading directions room above it.</li>
+      <li>Let James lead on a long-term investing goal, and Sarah lead on how you support family and mark the moments that matter.</li>
+      <li>Name one shared goal that needs both instincts — a trip you save toward (Connection + Security) or a fund you grow together (Growth + Legacy).</li>
+    </ul>
+
+    <h3 class="sec-h" style="margin-top:26px">Conversations worth having</h3>
+    <div class="grid2">
+      <div class="card"><p class="quote">“What would need to be true for us both to stop worrying about money?”</p></div>
+      <div class="card"><p class="quote">“How do we balance being generous with looking after ourselves?”</p></div>
+      <div class="card"><p class="quote">“Where do you hope we are financially in ten years?”</p></div>
+      <div class="card"><p class="quote">“What's one goal you'd like us to start working toward this year?”</p></div>
+    </div>
+
+    <h3 class="sec-h" style="margin-top:26px">A simple monthly money check-in</h3>
+    <div class="card">
+      <ul class="clean" style="margin:0">
+        <li>One win since last time</li>
+        <li>One thing either of us is worried about</li>
+        <li>One decision to make together</li>
+        <li>One thing we're saving toward — and how it's going</li>
+      </ul>
+    </div>
+
+    <h3 class="sec-h" style="margin-top:26px">Your 90-day shared plan</h3>
+    <div class="card" style="padding-top:6px; padding-bottom:6px">
+      <div class="plan-row"><div class="plan-when">This week</div><div class="plan-what">Swap your two reports and read them together. Pick one conversation card above and talk it through.</div></div>
+      <div class="plan-row"><div class="plan-when">Days 1–30</div><div class="plan-what">Agree your shared safety-baseline number. Set up one automatic transfer toward it.</div></div>
+      <div class="plan-row"><div class="plan-when">Days 30–60</div><div class="plan-what">Choose one shared goal and name the amount — a trip, a fund, or paying something down.</div></div>
+      <div class="plan-row"><div class="plan-when">Days 60–90</div><div class="plan-what">Book a recurring 20-minute monthly check-in. Review what's working and adjust together.</div></div>
+    </div>
+
+    <div class="dark" style="margin-top:24px; text-align:center">
+      <p class="lead" style="margin:0">What kind of financial future are we building together?</p>
+      <p style="font-size:13px; margin:8px 0 0">Keep asking it. The answer is allowed to change.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Wealth Compass™ · Sarah &amp; James</span><span>Page 2 of 2</span></div>
+</div>
+
+
+<script>
+  Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+  const DIMS = ['🛡 Security','🕊 Freedom','📈 Growth','✨ Experiences','❤️ Connection','🎯 Purpose','🌳 Legacy','⚖️ Balance'];
+  function roseLight(){
+    return { r:{ min:0,max:100,beginAtZero:true, ticks:{display:false,stepSize:25},
+      grid:{color:'rgba(10,37,64,.10)'}, angleLines:{color:'rgba(10,37,64,.10)'},
+      pointLabels:{color:'#0A2540',font:{size:11,weight:'500'}} } };
+  }
+  window.addEventListener('load', function(){
+    new Chart(document.getElementById('pdfRadar1'), {
+      type:'radar',
+      data:{ labels:DIMS, datasets:[{ data:[90,55,42,70,84,50,38,62],
+        backgroundColor:'rgba(88,81,232,.22)', borderColor:'#5851E8', borderWidth:2, pointBackgroundColor:'#5851E8', pointRadius:3 }]},
+      options:{ responsive:false, plugins:{legend:{display:false}}, scales:roseLight() }
+    });
+    new Chart(document.getElementById('pdfRadarShared'), {
+      type:'radar',
+      data:{ labels:DIMS, datasets:[
+        { label:'Sarah', data:[90,55,42,70,84,50,38,62], backgroundColor:'rgba(99,91,255,.20)', borderColor:'#635BFF', borderWidth:2, pointBackgroundColor:'#635BFF', pointRadius:2.5 },
+        { label:'James', data:[80,60,82,58,52,66,70,48], backgroundColor:'rgba(139,133,255,.14)', borderColor:'#8B85FF', borderWidth:2, pointBackgroundColor:'#8B85FF', pointRadius:2.5, borderDash:[5,4] }
+      ]},
+      options:{ responsive:false, plugins:{legend:{display:false}}, scales:roseLight() }
+    });
+  });
+</script>
+
+</body>
+</html>

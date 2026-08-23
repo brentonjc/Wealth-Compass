@@ -1,0 +1,112 @@
+question,type,ref,label,dimension,weight
+_config,config,rankWeight1,,,3
+_config,config,rankWeight2,,,2
+_config,config,rankWeight3,,,1
+_config,config,allocationScale,,,8
+_config,config,normalizeMin,,,30
+_config,config,normalizeMax,,,95
+q2,single,option:0,"Save first, spend what's left",security,2
+q2,single,option:1,"Money is meant to be enjoyed, not hoarded",experiences,2
+q2,single,option:2,Look after your own before anyone else,connection,2
+q2,single,option:3,Never depend on someone else for your money,freedom,2
+q3,single,option:0,Steady,security,2
+q3,single,option:1,Motivated,growth,2
+q3,single,option:3,Free,freedom,2
+q4,single,option:0,Not lying awake worrying about it,security,2
+q4,single,option:1,Having the freedom to make my own choices,freedom,2
+q4,single,option:2,Watching what I have grow over time,growth,2
+q4,single,option:3,Being able to say yes to the things I love,experiences,2
+q4,single,option:4,Knowing the people I love are taken care of,connection,2
+q5,single,option:0,📋 A detailed budget I track closely,structured,2
+q5,single,option:1,🌊 Rough guardrails I adjust as I go,adaptive,2
+q5,single,option:2,"🔍 I research the big things, wing the rest",reflective,2
+q5,single,option:3,🤝 My partner and I manage it together,collaborative,2
+q5,single,option:4,🌿 A simple system I barely think about,intuitive,2
+q6,slider,low,Still learning,reflective,2
+q6,slider,high,Very confident,intuitive,2
+q7,single,option:0,The next few weeks,adaptive,2
+q7,single,option:1,"About a year, with a rough plan in place",structured,2
+q7,single,option:2,"Several years, after looking into the details",reflective,2
+q7,single,option:3,It's something we figure out together as we go,collaborative,2
+q7,single,option:4,I don't tend to plan that far ahead,intuitive,2
+q8,single,option:0,I like having a detailed plan,structured,2
+q8,single,option:1,I prefer to stay flexible,adaptive,2
+q8,single,option:2,I research before deciding,reflective,2
+q8,single,option:3,I like discussing decisions with others,collaborative,2
+q8,single,option:4,I trust my instincts and keep it simple,intuitive,2
+q9,allocation,bucket:0,🛡 Save for safety,security,40
+q9,allocation,bucket:1,📈 Invest to grow,growth,25
+q9,allocation,bucket:2,✨ Experiences & travel,experiences,20
+q9,allocation,bucket:3,❤️ Help family,connection,10
+q9,allocation,bucket:4,🌳 Give / leave behind,legacy,5
+q10,single,option:0,"Feeling safe, whatever happens",security,2
+q10,single,option:1,Having the freedom to choose how I spend my time,freedom,2
+q10,single,option:2,Watching my money grow,growth,2
+q10,single,option:3,Making the most of life now,experiences,2
+q10,single,option:4,Looking after the people close to me,connection,2
+q10,single,option:5,Putting money toward something meaningful,purpose,2
+q10,single,option:6,Leaving something behind for those who come after,legacy,2
+q10,single,option:7,A good balance of today and tomorrow,balance,2
+q11,single,option:0,An unexpected expense,security,2
+q11,single,option:1,Feeling stuck with fewer options than I'd like,freedom,2
+q11,single,option:2,Not investing as much as I'd like to,growth,2
+q11,single,option:3,Not spending on the things that matter to me,experiences,2
+q11,single,option:4,Not being able to help family the way I'd want to,connection,2
+q12,slider,low,Prefer certainty,security,2
+q12,slider,high,Comfortable with ups and downs,growth,2
+q13,single,option:0,Clear the last of a debt,security,2
+q13,single,option:1,Take the family somewhere special,experiences,1
+q13,single,option:1,Take the family somewhere special,connection,1
+q13,single,option:2,Invest it for later,growth,2
+q14,single,option:0,My bills are covered with room to spare,security,2
+q14,single,option:1,I can choose how I spend my time,freedom,2
+q14,single,option:2,My investments can support what's ahead,growth,2
+q14,single,option:3,I can enjoy money without a second thought,experiences,1
+q14,single,option:3,I can enjoy money without a second thought,balance,1
+q14,single,option:4,The people I love are taken care of,connection,2
+q14,single,option:5,I'm putting money toward what matters to me,purpose,2
+q16,single,option:0,Understanding each other's perspective,connection,1
+q16,single,option:0,Understanding each other's perspective,collaborative,1
+q16,single,option:1,Finding a solution quickly,adaptive,2
+q16,single,option:2,Making sure both voices are heard,collaborative,2
+q16,single,option:3,Sticking to what we'd already agreed,structured,1
+q16,single,option:3,Sticking to what we'd already agreed,security,1
+q16,single,option:4,Just moving forward together,adaptive,1
+q16,single,option:4,Just moving forward together,connection,1
+q17,ranking,item:0,Honesty about money,security,1
+q17,ranking,item:1,Independence and flexibility with money,freedom,1
+q17,ranking,item:2,Ambition to grow together,growth,1
+q17,ranking,item:3,Enjoying life together,experiences,1
+q17,ranking,item:4,Generosity toward each other and family,connection,1
+q17,ranking,item:5,Living by shared values,purpose,1
+q17,ranking,item:6,Thinking about our future together,legacy,1
+q17,ranking,item:7,A balanced approach to spending and saving,balance,1
+q18,single,option:0,One of us usually takes the lead,structured,2
+q18,single,option:1,We split it by what each of us is better placed to handle,adaptive,1
+q18,single,option:1,We split it by what each of us is better placed to handle,structured,1
+q18,single,option:2,We talk everything through together,collaborative,2
+q18,single,option:3,We each manage our own money separately,intuitive,1
+q18,single,option:3,We each manage our own money separately,freedom,1
+q19,single,option:0,Regular check-ins about money,collaborative,1
+q19,single,option:0,Regular check-ins about money,structured,1
+q19,single,option:1,Being more open about spending,connection,2
+q19,single,option:2,Agreeing in advance on big purchases,security,1
+q19,single,option:2,Agreeing in advance on big purchases,structured,1
+q19,single,option:3,Working toward a shared goal together,connection,1
+q19,single,option:3,Working toward a shared goal together,growth,1
+q19,single,option:4,"More spontaneity, together",experiences,1
+q19,single,option:4,"More spontaneity, together",adaptive,1
+q20,multi,option:0,Security,security,2
+q20,multi,option:1,Freedom,freedom,2
+q20,multi,option:2,Growth,growth,2
+q20,multi,option:3,Experiences,experiences,2
+q20,multi,option:4,Connection,connection,2
+q20,multi,option:5,Purpose,purpose,2
+q20,multi,option:6,Legacy,legacy,2
+q20,multi,option:7,Balance,balance,2
+q21,single,option:0,One where we never have to worry about the basics,security,2
+q21,single,option:1,One where we have real choices about how we live,freedom,2
+q21,single,option:2,One where our money keeps working long after we've stopped,legacy,2
+q21,single,option:3,One full of shared experiences and memories,experiences,2
+q21,single,option:4,One where family always comes first,connection,2
+q21,single,option:5,One where we've made a difference in something bigger than us,purpose,2

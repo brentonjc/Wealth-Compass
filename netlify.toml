@@ -1,0 +1,86 @@
+# Netlify config — static site, no build step. Just publish the repo root.
+[build]
+  publish = "."
+  command = ""
+
+# Working/dev files live in the repo but shouldn't be served on the live site.
+# These 404s are matched before the SPA catch-all below (first match wins).
+[[redirects]]
+  from = "/node_modules/*"
+  to = "/index.html"
+  status = 404
+[[redirects]]
+  from = "/content/*"
+  to = "/index.html"
+  status = 404
+[[redirects]]
+  from = "/reports-wireframe.html"
+  to = "/index.html"
+  status = 404
+[[redirects]]
+  from = "/pdf-mockup.html"
+  to = "/index.html"
+  status = 404
+[[redirects]]
+  from = "/wireframe.html"
+  to = "/index.html"
+  status = 404
+
+# Working docs and dev-only files. Netlify's manual (drag-and-drop) deploy uploads the
+# whole folder and ignores .gitignore, so these would otherwise be served at public URLs.
+# None hold secrets, but there's no reason to expose internal notes, copy source or build
+# config. (report.html / reports-mobile.html are intentionally NOT here — they ship.)
+[[redirects]]
+  from = "/README.md"
+  to = "/index.html"
+  status = 404
+[[redirects]]
+  from = "/copy.md"
+  to = "/index.html"
+  status = 404
+[[redirects]]
+  from = "/wireframe-copy.md"
+  to = "/index.html"
+  status = 404
+[[redirects]]
+  from = "/wealth-compass-assessment-trimmed.md"
+  to = "/index.html"
+  status = 404
+[[redirects]]
+  from = "/firestore.rules"
+  to = "/index.html"
+  status = 404
+[[redirects]]
+  from = "/server.js"
+  to = "/index.html"
+  status = 404
+[[redirects]]
+  from = "/package.json"
+  to = "/index.html"
+  status = 404
+[[redirects]]
+  from = "/package-lock.json"
+  to = "/index.html"
+  status = 404
+[[redirects]]
+  from = "/tailwind.config.js"
+  to = "/index.html"
+  status = 404
+[[redirects]]
+  from = "/styles/tailwind-input.css"
+  to = "/index.html"
+  status = 404
+
+# SPA-style single entry (real files like /report.html, /src/*, /favicon.svg are
+# served first; only unmatched paths fall through to the app shell).
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

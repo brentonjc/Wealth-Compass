@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wealth Compass™ — Wireframe v3 (Fintech theme)</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  // ── Fintech design-system tokens (Stripe-inspired blurple) ──
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg:'#F6F9FC', card:'#FFFFFF', card2:'#F0F3F9', card3:'#E7ECF5',
+          primary:'#5851E8', primarybright:'#635BFF', purple:'#6C63E0', purplelight:'#8B85FF',
+          success:'#0F9E73', warn:'#C97A0E',
+          text:'#0A2540', muted:'#5A6B85', line:'rgba(10,37,64,0.12)',
+          /* dark "moment" surfaces */
+          ink0:'#0A0E1A', ink1:'#111B34', ink2:'#16213E', ink3:'#1C2A4C',
+          textdark:'#EAF0FA', muteddark:'#8291AD', linedark:'rgba(107,124,153,0.22)',
+        },
+        fontFamily: {
+          display:['Sora','system-ui','sans-serif'],
+          body:['"DM Sans"','system-ui','sans-serif'],
+          mono:['"DM Mono"','ui-monospace','monospace'],
+        },
+      }
+    }
+  }
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  body { background:#EEF1F7; font-family:'DM Sans',system-ui,sans-serif; }
+
+  .phone {
+    width:390px; min-height:800px; border-radius:2.5rem; background:#F6F9FC;
+    box-shadow:0 16px 40px -18px rgba(10,37,64,.20), 0 0 0 1px rgba(10,37,64,.06);
+    overflow:hidden; display:flex; flex-direction:column; position:relative; flex-shrink:0;
+  }
+
+  .card-surface { background:#FFFFFF; border:1px solid rgba(10,37,64,.10); }
+  .soft-shadow { box-shadow:0 2px 10px rgba(10,37,64,.06); }
+  .lift-shadow { box-shadow:0 8px 28px rgba(10,37,64,.10); }
+
+  .gradient-app { background:linear-gradient(180deg,#FFFFFF 0%,#F6F9FC 60%,#EEF3FA 100%); }
+  .gradient-ink { background:linear-gradient(165deg,#0A0E1A 0%,#111B34 58%,#1C2A4C 100%); }
+
+  @keyframes breathe { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
+  .breathe { animation:breathe 5s ease-in-out infinite; }
+  @keyframes draw { to { stroke-dashoffset:0; } }
+  .growth-line { stroke-dasharray:320; stroke-dashoffset:320; animation:draw 2s ease-out forwards; }
+  .growth-loop { stroke-dasharray:320; stroke-dashoffset:320; animation:draw 2.6s ease-in-out infinite; }
+  /* Sound-wave logo — two colour lines travelling right at different speeds */
+  @keyframes waveShift { from{transform:translateX(0);} to{transform:translateX(-72px);} }
+  .wave-a { animation:waveShift 1.8s linear infinite; }
+  .wave-b { animation:waveShift 2.6s linear infinite; }
+  @keyframes floaty { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+  .floaty  { animation:floaty 4s ease-in-out infinite; }
+  .floaty2 { animation:floaty 5.4s ease-in-out infinite; }
+
+  .answer-card { background:#FFFFFF; box-shadow:0 1px 4px rgba(10,37,64,.05); transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease; cursor:pointer; }
+  .answer-card:hover { transform:translateY(-1px); box-shadow:0 8px 22px rgba(88,81,232,.14); border-color:#5851E8; }
+
+  input[type=range] { -webkit-appearance:none; appearance:none; height:6px; border-radius:999px; background:#E7ECF5; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:28px; height:28px; border-radius:999px; background:#5851E8; box-shadow:0 2px 10px rgba(88,81,232,.5); cursor:pointer; }
+
+  .annotation { max-width:390px; }
+</style>
+</head>
+<body class="text-text">
+
+<!-- ===================== REVIEW HEADER ===================== -->
+<header class="max-w-6xl mx-auto px-6 pt-12 pb-4">
+  <p class="text-xs tracking-[0.25em] uppercase text-muted mb-2">Wireframe v4 · Full journey (32 screens) · For review before build</p>
+  <h1 class="font-display font-semibold text-4xl text-text">Wealth Compass™</h1>
+  <p class="mt-3 text-muted max-w-3xl leading-relaxed">
+    The complete flow, screen by screen: <strong class="text-text">Home → Welcome → About You → 21-question assessment (5 sections) → Calculating → Reveal → My Wealth Compass → My Navigation Preferences → Conversation Cards → Reports → Partner handoff → Our Shared Compass.</strong>
+    Fintech design system (blurple <code class="text-primary">#5851E8</code>, near-white surfaces, Sora / DM Sans / DM Mono; every <span class="font-mono text-primary">$</span> monospaced). Two frameworks, live Chart.js radars, Firebase share-code handoff.
+    The grey note above each phone explains its behaviour &amp; interaction type — copy is the real proposed copy.
+  </p>
+</header>
+
+<main class="max-w-[1700px] mx-auto px-6 py-10 flex flex-wrap gap-x-10 gap-y-16 justify-center">
+
+
+<!-- ============ 1. HOME (indigo splash) ============ -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">01 · Home (indigo splash)</p>
+    <p class="text-sm text-muted mt-1">Cleaned up: trimmed copy (dropped the label + helper line), fewer scattered shapes, more breathing room. Two paths: assessment, or conversations first.</p>
+  </div>
+  <div class="phone relative overflow-hidden" style="background:linear-gradient(158deg,#5B54EC 0%,#4239C6 56%,#332BA8 100%);">
+
+    <!-- decorative shapes -->
+    <svg class="absolute top-0 right-0 pointer-events-none" width="200" height="150" viewBox="0 0 200 150" fill="none">
+      <path d="M-10 40 C60 8 120 30 210 -10" stroke="#FF8A3D" stroke-width="2" opacity="0.85"/>
+      <path d="M-10 60 C70 30 130 52 210 14" stroke="#8FB4FF" stroke-width="1.5" opacity="0.35"/>
+    </svg>
+    <div class="absolute top-7 right-7 pointer-events-none" style="width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:17px solid #FF8A3D;transform:rotate(18deg);opacity:.9;"></div>
+
+    <!-- brand lockup + hero copy -->
+    <div class="relative z-10 px-8 pt-12">
+      <div class="flex items-center gap-2.5">
+        <svg viewBox="0 0 120 40" width="62" height="26" class="overflow-visible">
+          <defs><clipPath id="wclip"><rect x="0" y="0" width="120" height="40"/></clipPath></defs>
+          <g clip-path="url(#wclip)">
+            <path class="wave-a" d="M0,20 C10,6 26,6 36,20 C46,34 62,34 72,20 C82,6 98,6 108,20 C118,34 134,34 144,20 C154,6 170,6 180,20 C190,34 206,34 216,20 C226,6 242,6 252,20" fill="none" stroke="#FF8A3D" stroke-width="3.6" stroke-linecap="round"/>
+            <path class="wave-b" d="M0,20 C10,34 26,34 36,20 C46,6 62,6 72,20 C82,34 98,34 108,20 C118,6 134,6 144,20 C154,34 170,34 180,20 C190,6 206,6 216,20 C226,34 242,34 252,20" fill="none" stroke="#57E0D0" stroke-width="3.6" stroke-linecap="round"/>
+          </g>
+        </svg>
+        <span class="text-white/95 font-display font-semibold text-[15px] tracking-tight">Wealth Compass™</span>
+      </div>
+
+      <h1 class="mt-24 text-white font-display font-bold text-[42px] leading-[1.06]">Discover your<br>financial<br>direction</h1>
+      <p class="mt-6 text-white/70 text-[15px] leading-relaxed max-w-[244px]">Understand the decisions you make with money — and the future you're building.</p>
+
+      <div class="mt-12 space-y-3.5 max-w-[320px]">
+        <button class="w-full py-4 rounded-2xl text-white font-display font-semibold text-[16px] flex items-center justify-center gap-2" style="background:#FF8A3D;box-shadow:0 12px 28px -8px rgba(255,138,61,.7);">Take the assessment <span class="text-xl leading-none">›</span></button>
+        <button class="w-full py-4 rounded-2xl text-white font-display font-medium text-[15px] flex items-center justify-center gap-2" style="background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.35);"><span>💬</span> Start with conversations</button>
+      </div>
+      <p class="mt-6 text-[13px] text-white/60">Partner already finished? <span class="text-[#FFC49B] font-medium underline underline-offset-2">Add their Compass ›</span></p>
+    </div>
+
+    <!-- finance illustration -->
+    <svg class="absolute bottom-0 left-0 w-full pointer-events-none" viewBox="0 0 390 330" fill="none" preserveAspectRatio="xMidYMax meet">
+      <defs>
+        <radialGradient id="coinG" cx="40%" cy="35%" r="70%"><stop offset="0%" stop-color="#EEF3FF"/><stop offset="100%" stop-color="#A9C4FF"/></radialGradient>
+        <linearGradient id="leafG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8FB4FF"/><stop offset="100%" stop-color="#4E79E6"/></linearGradient>
+        <linearGradient id="leafG2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6E92F5"/><stop offset="100%" stop-color="#3B5FCC"/></linearGradient>
+      </defs>
+      <!-- soft base glow -->
+      <ellipse cx="150" cy="320" rx="220" ry="90" fill="#FFFFFF" opacity="0.05"/>
+      <!-- leaves -->
+      <g transform="translate(120 250)">
+        <path d="M0 0 C34 -14 46 -66 14 -104 C-20 -70 -30 -18 0 0 Z" fill="url(#leafG2)" transform="rotate(-24)"/>
+        <path d="M0 0 C36 -10 54 -58 26 -100 C-8 -66 -30 -20 0 0 Z" fill="url(#leafG)" transform="rotate(10)"/>
+        <path d="M0 0 C40 -6 62 -44 44 -86 C6 -60 -22 -22 0 0 Z" fill="url(#leafG2)" transform="rotate(46)" opacity="0.9"/>
+      </g>
+      <!-- coins -->
+      <g class="floaty">
+        <circle cx="92" cy="176" r="23" fill="url(#coinG)" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="1.5"/>
+        <text x="92" y="184" text-anchor="middle" font-family="'DM Mono',monospace" font-size="21" fill="#3E579B">$</text>
+      </g>
+      <g>
+        <circle cx="168" cy="236" r="38" fill="url(#coinG)" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="2"/>
+        <circle cx="168" cy="236" r="30" fill="none" stroke="#7FA0E6" stroke-opacity="0.35" stroke-width="1.5"/>
+        <text x="168" y="248" text-anchor="middle" font-family="'DM Mono',monospace" font-size="34" fill="#3E579B">$</text>
+      </g>
+    </svg>
+
+  </div>
+</section>
+
+
+<!-- ============ 2. WELCOME ============ -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">02 · Welcome</p>
+    <p class="text-sm text-muted mt-1">Frames the two frameworks and the no-right-answers promise. Now warmed with floating coins &amp; soft shapes so it feels welcoming, not stark.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-16 right-9 w-3.5 h-3.5 rounded-full" style="background:#FF8A3D;opacity:.55"></div>
+      <div class="absolute top-36 left-8 w-3.5 h-3.5 rounded-sm rotate-45" style="background:#57E0D0;opacity:.55"></div>
+      <div class="absolute bottom-32 right-7 w-2.5 h-2.5 rounded-full" style="background:#8B85FF;opacity:.6"></div>
+      <svg class="absolute bottom-24 left-7 floaty" width="46" height="46" viewBox="0 0 46 46"><circle cx="23" cy="23" r="19.5" fill="#EEF3FF" stroke="#CBD8F6" stroke-width="1.5"/><text x="23" y="30" text-anchor="middle" font-family="'DM Mono',monospace" font-size="17" fill="#8AA0D8">$</text></svg>
+      <svg class="absolute top-24 right-6 floaty2" width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="14" fill="#EEFBF8" stroke="#BEEDE4" stroke-width="1.5"/><text x="17" y="23" text-anchor="middle" font-family="'DM Mono',monospace" font-size="13" fill="#4FB4A6">$</text></svg>
+    </div>
+    <div class="relative z-10 flex-1 flex flex-col justify-center px-8">
+      <p class="text-xs tracking-[0.25em] uppercase text-primary mb-4">Before we begin</p>
+      <h2 class="font-display font-semibold text-3xl leading-snug text-text">A compass doesn't tell you where to go.</h2>
+      <p class="mt-5 text-[15px] leading-relaxed text-muted">It reveals the direction you naturally orient toward when making financial decisions.</p>
+      <div class="mt-8 space-y-4">
+        <div class="card-surface rounded-2xl p-5 soft-shadow"><p class="text-[14px] leading-relaxed"><span class="font-medium text-text">Two views of you.</span><br><span class="text-muted">Your <em>Compass</em> shows what you prioritise. Your <em>Navigation</em> shows how you decide.</span></p></div>
+        <div class="card-surface rounded-2xl p-5 soft-shadow"><p class="text-[14px] leading-relaxed"><span class="font-medium text-text">No direction is better than another.</span><br><span class="text-muted">Every direction brings trade-offs. This is never about being good or bad with money.</span></p></div>
+        <div class="card-surface rounded-2xl p-5 soft-shadow"><p class="text-[14px] leading-relaxed"><span class="font-medium text-text">Encrypted &amp; private.</span><br><span class="text-muted">Your answers are encrypted on your device — we can't read them.</span></p></div>
+      </div>
+    </div>
+    <div class="relative z-10 px-8 pb-12"><button class="w-full py-4 rounded-xl bg-primary text-white font-medium text-[16px] lift-shadow">I'm ready</button></div>
+  </div>
+</section>
+
+
+<!-- ============ 3. ABOUT YOU ============ -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">03 · About You</p>
+    <p class="text-sm text-muted mt-1">Minimal context. First name personalises the reports.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[4%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">ABOUT YOU</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-3xl leading-snug text-text">Let's start with you.</h2>
+      <p class="mt-3 text-[15px] text-muted">Just enough to make this yours.</p>
+      <div class="mt-8 space-y-5">
+        <div><label class="text-[13px] font-medium text-text">What should we call you?</label>
+          <input class="mt-2 w-full px-5 py-4 rounded-xl bg-card2 border border-line text-[15px] placeholder:text-muted/60" placeholder="Your first name"></div>
+        <div><label class="text-[13px] font-medium text-text">Which season of life are you in? <span class="text-muted font-normal">(optional)</span></label>
+          <div class="mt-2 grid grid-cols-2 gap-2.5">
+            <button class="answer-card py-3.5 rounded-xl border border-line text-[14px]">Building &amp; exploring</button>
+            <button class="answer-card py-3.5 rounded-xl border border-line text-[14px]">Growing a family</button>
+            <button class="answer-card py-3.5 rounded-xl border border-line text-[14px]">Established &amp; evolving</button>
+            <button class="answer-card py-3.5 rounded-xl border border-line text-[14px]">Rethinking what's next</button>
+          </div></div>
+        <div><label class="text-[13px] font-medium text-text">Are you exploring this…</label>
+          <div class="mt-2 grid grid-cols-2 gap-2.5">
+            <button class="answer-card py-3.5 rounded-xl border-2 border-primary text-[14px] font-medium text-primary">Just for me</button>
+            <button class="answer-card py-3.5 rounded-xl border border-line text-[14px]">With my partner</button>
+          </div></div>
+      </div>
+    </div>
+    <div class="px-8 pb-12"><button class="w-full py-4 rounded-xl bg-primary text-white font-medium text-[16px] lift-shadow">Continue</button></div>
+  </div>
+</section>
+
+
+<!-- ============ ASSESSMENT · SECTION 1 — MONEY STORY (Q1–Q4) ============ -->
+
+<!-- Q1 -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">04 · Assessment Q1 · Money Story</p>
+    <p class="text-sm text-muted mt-1">Selection cards · narrative-only.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[5%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">YOUR MONEY STORY · 1 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <p class="text-xs tracking-[0.2em] uppercase text-primary mb-3">Looking back</p>
+      <h2 class="font-display font-semibold text-[26px] leading-snug text-text">Growing up, money was mostly…</h2>
+      <div class="mt-8 space-y-3">
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">Something we had enough of</p><p class="text-[13px] text-muted mt-1">Money felt steady and rarely worried about.</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">Something to be careful with</p><p class="text-[13px] text-muted mt-1">We made it work, but always watched it closely.</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">A source of stress</p><p class="text-[13px] text-muted mt-1">There often wasn't quite enough to go around.</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">Rarely talked about</p><p class="text-[13px] text-muted mt-1">Money stayed behind closed doors.</p></button>
+      </div>
+      <p class="mt-6 text-center text-[12px] text-muted">Tap one — it continues automatically</p>
+    </div>
+  </div>
+</section>
+
+<!-- Q2 -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">05 · Assessment Q2 · Money Story</p>
+    <p class="text-sm text-muted mt-1">Selection cards.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[10%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">YOUR MONEY STORY · 2 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[26px] leading-snug text-text">Which financial lesson shaped you most?</h2>
+      <div class="mt-7 space-y-3">
+        <button class="answer-card w-full text-left p-4 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">Save first, spend what's left</p><p class="text-[13px] text-muted mt-0.5">A habit that's stayed with me since I was young.</p></button>
+        <button class="answer-card w-full text-left p-4 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">Money is meant to be enjoyed, not hoarded</p><p class="text-[13px] text-muted mt-0.5">Life's too short to only save for later.</p></button>
+        <button class="answer-card w-full text-left p-4 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">Look after your own before anyone else</p><p class="text-[13px] text-muted mt-0.5">Family comes before anything else financially.</p></button>
+        <button class="answer-card w-full text-left p-4 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">Never depend on someone else for money</p><p class="text-[13px] text-muted mt-0.5">Independence mattered more than comfort.</p></button>
+        <button class="answer-card w-full text-left p-4 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">I don't think I learned one, really</p><p class="text-[13px] text-muted mt-0.5">It wasn't something we talked about.</p></button>
+      </div>
+    </div>
+    <div class="px-8 pb-8 flex justify-center"><button class="text-[13px] text-muted">← Back</button></div>
+  </div>
+</section>
+
+<!-- Q3 -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">06 · Assessment Q3 · Money Story</p>
+    <p class="text-sm text-muted mt-1">Selection cards.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[14%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">YOUR MONEY STORY · 3 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[26px] leading-snug text-text">Today, money makes me feel…</h2>
+      <div class="mt-7 space-y-3">
+        <button class="answer-card w-full text-left p-4 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">Steady</p><p class="text-[13px] text-muted mt-0.5">I mostly don't think about it day to day.</p></button>
+        <button class="answer-card w-full text-left p-4 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">Motivated</p><p class="text-[13px] text-muted mt-0.5">It's something I enjoy working toward.</p></button>
+        <button class="answer-card w-full text-left p-4 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">Anxious sometimes</p><p class="text-[13px] text-muted mt-0.5">It's there in the back of my mind.</p></button>
+        <button class="answer-card w-full text-left p-4 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">Free</p><p class="text-[13px] text-muted mt-0.5">It opens doors more than it closes them.</p></button>
+        <button class="answer-card w-full text-left p-4 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">Complicated</p><p class="text-[13px] text-muted mt-0.5">Good and hard feelings, depending on the day.</p></button>
+      </div>
+    </div>
+    <div class="px-8 pb-8 flex justify-center"><button class="text-[13px] text-muted">← Back</button></div>
+  </div>
+</section>
+
+<!-- Q4 -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">07 · Assessment Q4 · Money Story</p>
+    <p class="text-sm text-muted mt-1">Selection cards.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[19%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">YOUR MONEY STORY · 4 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[26px] leading-snug text-text">Financial success means…</h2>
+      <div class="mt-8 space-y-3">
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Not lying awake worrying about it</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Having the freedom to make my own choices</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Watching what I have grow over time</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Being able to say yes to the things I love</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Knowing the people I love are taken care of</p></button>
+      </div>
+    </div>
+    <div class="px-8 pb-8 flex justify-center"><button class="text-[13px] text-muted">← Back</button></div>
+  </div>
+</section>
+
+
+<!-- ============ ASSESSMENT · SECTION 2 — NAVIGATION (Q5–Q8) ============ -->
+
+<!-- Q5 · Navigation anchor 1 of 3 -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">08 · Assessment Q5 · How you navigate</p>
+    <p class="text-sm text-muted mt-1">Selection cards · Navigation anchor (one option per preference).</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[24%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">HOW YOU NAVIGATE · 5 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[26px] leading-snug text-text">Which budgeting approach feels most like you?</h2>
+      <div class="mt-7 space-y-3">
+        <button class="answer-card w-full text-left p-4 rounded-2xl border border-line"><p class="text-[15px] text-text">📋 A detailed budget I track closely</p></button>
+        <button class="answer-card w-full text-left p-4 rounded-2xl border border-line"><p class="text-[15px] text-text">🌊 Rough guardrails I adjust as I go</p></button>
+        <button class="answer-card w-full text-left p-4 rounded-2xl border border-line"><p class="text-[15px] text-text">🔍 I research the big things, wing the rest</p></button>
+        <button class="answer-card w-full text-left p-4 rounded-2xl border border-line"><p class="text-[15px] text-text">🤝 My partner and I manage it together</p></button>
+        <button class="answer-card w-full text-left p-4 rounded-2xl border border-line"><p class="text-[15px] text-text">🌿 A simple system I barely think about</p></button>
+      </div>
+    </div>
+    <div class="px-8 pb-8 flex justify-center"><button class="text-[13px] text-muted">← Back</button></div>
+  </div>
+</section>
+
+<!-- Q6 · slider -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">09 · Assessment Q6 · How you navigate</p>
+    <p class="text-sm text-muted mt-1">Slider · Reflective ↔ Intuitive axis.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[29%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">HOW YOU NAVIGATE · 6 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[26px] leading-snug text-text">How confident do you feel making financial decisions?</h2>
+      <div class="mt-12 card-surface rounded-2xl p-6 soft-shadow">
+        <p class="text-center font-display font-semibold text-[20px] text-primary mb-6">Fairly confident</p>
+        <input type="range" min="0" max="100" value="66" class="w-full">
+        <div class="flex justify-between text-[12px] text-muted mt-3"><span>Still learning</span><span>Very confident</span></div>
+      </div>
+      <p class="mt-6 text-center text-[12px] text-muted">Drag to wherever feels honest</p>
+    </div>
+    <div class="px-8 pb-8"><button class="w-full py-4 rounded-xl bg-primary text-white font-medium text-[16px] lift-shadow">Continue</button></div>
+  </div>
+</section>
+
+<!-- Q7 · Navigation anchor 2 of 3 -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">10 · Assessment Q7 · How you navigate</p>
+    <p class="text-sm text-muted mt-1">Selection cards · Navigation anchor.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[33%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">HOW YOU NAVIGATE · 7 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[26px] leading-snug text-text">How far ahead do you typically plan financially?</h2>
+      <div class="mt-8 space-y-3">
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">The next few weeks</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">About a year, with a rough plan in place</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Several years, after looking into the details</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">It's something we figure out together as we go</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">I don't tend to plan that far ahead</p></button>
+      </div>
+    </div>
+    <div class="px-8 pb-8 flex justify-center"><button class="text-[13px] text-muted">← Back</button></div>
+  </div>
+</section>
+
+<!-- Q8 · Navigation anchor 3 of 3 -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">11 · Assessment Q8 · How you navigate</p>
+    <p class="text-sm text-muted mt-1">Selection cards · Navigation anchor.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[38%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">HOW YOU NAVIGATE · 8 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[26px] leading-snug text-text">Which statement feels most like you?</h2>
+      <div class="mt-8 space-y-3">
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">I like having a detailed plan</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">I prefer to stay flexible</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">I research before deciding</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">I like discussing decisions with others</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">I trust my instincts and keep it simple</p></button>
+      </div>
+    </div>
+    <div class="px-8 pb-8 flex justify-center"><button class="text-[13px] text-muted">← Back</button></div>
+  </div>
+</section>
+
+
+<!-- ============ ASSESSMENT · SECTION 3 — WEALTH COMPASS (Q9–Q14) ============ -->
+
+<!-- Q9 · budget allocation -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">12 · Assessment Q9 · Your Wealth Compass</p>
+    <p class="text-sm text-muted mt-1">Budget allocation · always totals $100k. Amounts monospaced.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[43%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">YOUR WEALTH COMPASS · 9 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[24px] leading-snug text-text"><span class="font-mono">$100,000</span> arrives tomorrow. How would you divide it?</h2>
+      <p class="mt-2 text-[13px] text-muted">Drag the amounts — they always add to <span class="font-mono">$100k</span>.</p>
+      <div class="mt-6 space-y-4">
+        <div><div class="flex justify-between text-[13px] mb-1.5"><span class="font-medium text-text">🛡 Save for safety</span><span class="text-primary font-mono">$40k</span></div><div class="h-2.5 rounded-full bg-card3"><div class="h-full w-[40%] rounded-full bg-primary"></div></div></div>
+        <div><div class="flex justify-between text-[13px] mb-1.5"><span class="font-medium text-text">📈 Invest to grow</span><span class="text-primary font-mono">$25k</span></div><div class="h-2.5 rounded-full bg-card3"><div class="h-full w-[25%] rounded-full bg-primary"></div></div></div>
+        <div><div class="flex justify-between text-[13px] mb-1.5"><span class="font-medium text-text">✨ Experiences &amp; travel</span><span class="text-primary font-mono">$20k</span></div><div class="h-2.5 rounded-full bg-card3"><div class="h-full w-[20%] rounded-full bg-primary"></div></div></div>
+        <div><div class="flex justify-between text-[13px] mb-1.5"><span class="font-medium text-text">❤️ Help family</span><span class="text-primary font-mono">$10k</span></div><div class="h-2.5 rounded-full bg-card3"><div class="h-full w-[10%] rounded-full bg-primary"></div></div></div>
+        <div><div class="flex justify-between text-[13px] mb-1.5"><span class="font-medium text-text">🌳 Give / leave behind</span><span class="text-primary font-mono">$5k</span></div><div class="h-2.5 rounded-full bg-card3"><div class="h-full w-[5%] rounded-full bg-primary"></div></div></div>
+      </div>
+      <p class="mt-5 text-center text-[13px] text-success font-medium"><span class="font-mono">$100,000</span> allocated ✓</p>
+    </div>
+    <div class="px-8 pb-8"><button class="w-full py-4 rounded-xl bg-primary text-white font-medium text-[16px] lift-shadow">Continue</button></div>
+  </div>
+</section>
+
+<!-- Q10 · Compass anchor 1 of 3 (8 options) -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">13 · Assessment Q10 · Your Wealth Compass</p>
+    <p class="text-sm text-muted mt-1">Selection cards · Compass anchor (one option per dimension).</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-12">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[48%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">YOUR WEALTH COMPASS · 10 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[24px] leading-snug text-text">Which financial outcome matters most?</h2>
+      <div class="mt-5 space-y-2.5">
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">Feeling safe, whatever happens</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">Freedom to choose how I spend my time</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">Watching my money grow</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">Making the most of life now</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">Looking after the people close to me</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">Putting money toward something meaningful</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">Leaving something behind for those who come after</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">A good balance of today and tomorrow</p></button>
+      </div>
+    </div>
+    <div class="px-8 pb-6 flex justify-center"><button class="text-[13px] text-muted">← Back</button></div>
+  </div>
+</section>
+
+<!-- Q11 -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">14 · Assessment Q11 · Your Wealth Compass</p>
+    <p class="text-sm text-muted mt-1">Selection cards.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[52%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">YOUR WEALTH COMPASS · 11 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[25px] leading-snug text-text">Which financial situation would you most like to feel more ease around?</h2>
+      <div class="mt-7 space-y-3">
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">An unexpected expense</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Feeling stuck with fewer options than I'd like</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Not investing as much as I'd like to</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Not spending on the things that matter to me</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Not being able to help family the way I'd want to</p></button>
+      </div>
+    </div>
+    <div class="px-8 pb-8 flex justify-center"><button class="text-[13px] text-muted">← Back</button></div>
+  </div>
+</section>
+
+<!-- Q12 · slider -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">15 · Assessment Q12 · Your Wealth Compass</p>
+    <p class="text-sm text-muted mt-1">Slider · Security ↔ Growth axis.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[57%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">YOUR WEALTH COMPASS · 12 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[26px] leading-snug text-text">How comfortable are you taking financial risk?</h2>
+      <div class="mt-12 card-surface rounded-2xl p-6 soft-shadow">
+        <p class="text-center font-display font-semibold text-[20px] text-primary mb-6">Somewhere in between</p>
+        <input type="range" min="0" max="100" value="50" class="w-full">
+        <div class="flex justify-between text-[12px] text-muted mt-3"><span>Prefer certainty</span><span>Comfortable with ups &amp; downs</span></div>
+      </div>
+      <p class="mt-6 text-center text-[12px] text-muted">There's no target position — just where you naturally sit today.</p>
+    </div>
+    <div class="px-8 pb-8"><button class="w-full py-4 rounded-xl bg-primary text-white font-medium text-[16px] lift-shadow">Continue</button></div>
+  </div>
+</section>
+
+
+<!-- Q13 · trade-off scenario -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">16 · Assessment Q13 · Your Wealth Compass</p>
+    <p class="text-sm text-muted mt-1">Trade-off scenario · weighted, not binary.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[62%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">YOUR WEALTH COMPASS · 13 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <p class="text-xs tracking-[0.2em] uppercase text-primary mb-3">A gentle trade-off</p>
+      <h2 class="font-display font-semibold text-[25px] leading-snug text-text">You have <span class="font-mono">$8,000</span> spare. Which pull is stronger?</h2>
+      <div class="mt-8 space-y-3">
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">Clear the last of a debt</p><p class="text-[13px] text-muted mt-1">The relief of owing nothing.</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">Take the family somewhere special</p><p class="text-[13px] text-muted mt-1">Memories you'll all keep.</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] font-medium text-text">Invest it for later</p><p class="text-[13px] text-muted mt-1">Let it grow quietly in the background.</p></button>
+      </div>
+    </div>
+    <div class="px-8 pb-10 flex justify-center"><button class="text-[13px] text-muted">← Back</button></div>
+  </div>
+</section>
+
+<!-- Q14 -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">17 · Assessment Q14 · Your Wealth Compass</p>
+    <p class="text-sm text-muted mt-1">Selection cards.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[67%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">YOUR WEALTH COMPASS · 14 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[26px] leading-snug text-text">I'll know I have "enough" when…</h2>
+      <div class="mt-6 space-y-2.5">
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">My bills are covered with room to spare</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">I can choose how I spend my time</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">My investments can support what's ahead</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">I can enjoy money without a second thought</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">The people I love are taken care of</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">I'm putting money toward what matters to me</p></button>
+      </div>
+    </div>
+    <div class="px-8 pb-8 flex justify-center"><button class="text-[13px] text-muted">← Back</button></div>
+  </div>
+</section>
+
+
+<!-- ============ ASSESSMENT · SECTION 4 — MONEY TOGETHER (Q15–Q19) ============ -->
+
+<!-- Q15 -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">18 · Assessment Q15 · Money Together</p>
+    <p class="text-sm text-muted mt-1">Selection cards · relationship read (not compass-scored).</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[71%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">MONEY TOGETHER · 15 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[26px] leading-snug text-text">How comfortable are you talking about money?</h2>
+      <div class="mt-8 space-y-3">
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Very comfortable — it comes up naturally</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Fairly comfortable, most of the time</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">A little easier with some topics than others</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Something we're still finding our way into</p></button>
+      </div>
+    </div>
+    <div class="px-8 pb-8 flex justify-center"><button class="text-[13px] text-muted">← Back</button></div>
+  </div>
+</section>
+
+<!-- Q16 -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">19 · Assessment Q16 · Money Together</p>
+    <p class="text-sm text-muted mt-1">Selection cards.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[76%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">MONEY TOGETHER · 16 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[25px] leading-snug text-text">When you two see money differently, what matters most?</h2>
+      <div class="mt-7 space-y-3">
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Understanding each other's perspective</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Finding a solution quickly</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Making sure both voices are heard</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Sticking to what we'd already agreed</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Just moving forward together</p></button>
+      </div>
+    </div>
+    <div class="px-8 pb-8 flex justify-center"><button class="text-[13px] text-muted">← Back</button></div>
+  </div>
+</section>
+
+<!-- Q17 · ranking · Compass anchor 2 of 3 -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">20 · Assessment Q17 · Money Together</p>
+    <p class="text-sm text-muted mt-1">Ranking (top three) · Compass anchor · 8 tracked qualities, one per dimension.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-12">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[81%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">MONEY TOGETHER · 17 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[23px] leading-snug text-text">In a financial partner, what matters most to you?</h2>
+      <p class="mt-1.5 text-[13px] text-muted">Drag your top three into order.</p>
+      <div class="mt-4 space-y-2">
+        <div class="card-surface rounded-xl p-3 soft-shadow flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-[12px] font-mono shrink-0">1</span><p class="text-[14px] text-text flex-1">Honesty about money</p><span class="text-muted text-[13px]">⋮⋮</span></div>
+        <div class="card-surface rounded-xl p-3 soft-shadow flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-[12px] font-mono shrink-0">2</span><p class="text-[14px] text-text flex-1">Ambition to grow together</p><span class="text-muted text-[13px]">⋮⋮</span></div>
+        <div class="card-surface rounded-xl p-3 soft-shadow flex items-center gap-3"><span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-[12px] font-mono shrink-0">3</span><p class="text-[14px] text-text flex-1">Generosity toward each other and family</p><span class="text-muted text-[13px]">⋮⋮</span></div>
+        <div class="rounded-xl p-3 border border-dashed border-line flex items-center gap-3 opacity-55"><span class="w-6 h-6 rounded-full bg-card3 text-muted flex items-center justify-center text-[12px] shrink-0">–</span><p class="text-[14px] text-muted flex-1">Independence and flexibility with money</p><span class="text-muted text-[13px]">⋮⋮</span></div>
+        <div class="rounded-xl p-3 border border-dashed border-line flex items-center gap-3 opacity-55"><span class="w-6 h-6 rounded-full bg-card3 text-muted flex items-center justify-center text-[12px] shrink-0">–</span><p class="text-[14px] text-muted flex-1">Enjoying life together</p><span class="text-muted text-[13px]">⋮⋮</span></div>
+        <div class="rounded-xl p-3 border border-dashed border-line flex items-center gap-3 opacity-55"><span class="w-6 h-6 rounded-full bg-card3 text-muted flex items-center justify-center text-[12px] shrink-0">–</span><p class="text-[14px] text-muted flex-1">Living by shared values</p><span class="text-muted text-[13px]">⋮⋮</span></div>
+        <div class="rounded-xl p-3 border border-dashed border-line flex items-center gap-3 opacity-55"><span class="w-6 h-6 rounded-full bg-card3 text-muted flex items-center justify-center text-[12px] shrink-0">–</span><p class="text-[14px] text-muted flex-1">Thinking about our future together</p><span class="text-muted text-[13px]">⋮⋮</span></div>
+        <div class="rounded-xl p-3 border border-dashed border-line flex items-center gap-3 opacity-55"><span class="w-6 h-6 rounded-full bg-card3 text-muted flex items-center justify-center text-[12px] shrink-0">–</span><p class="text-[14px] text-muted flex-1">A balanced approach to spending and saving</p><span class="text-muted text-[13px]">⋮⋮</span></div>
+      </div>
+    </div>
+    <div class="px-8 pb-6"><button class="w-full py-3.5 rounded-xl bg-primary text-white font-medium text-[16px] lift-shadow">Continue</button></div>
+  </div>
+</section>
+
+<!-- Q18 -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">21 · Assessment Q18 · Money Together</p>
+    <p class="text-sm text-muted mt-1">Selection cards.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[86%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">MONEY TOGETHER · 18 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[25px] leading-snug text-text">How do you feel major financial decisions are best made?</h2>
+      <div class="mt-8 space-y-3">
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">One of us usually takes the lead</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">We split it by what each of us handles best</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">We talk everything through together</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">We each manage our own money separately</p></button>
+      </div>
+    </div>
+    <div class="px-8 pb-8 flex justify-center"><button class="text-[13px] text-muted">← Back</button></div>
+  </div>
+</section>
+
+<!-- Q19 -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">22 · Assessment Q19 · Money Together</p>
+    <p class="text-sm text-muted mt-1">Selection cards.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[90%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">MONEY TOGETHER · 19 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[25px] leading-snug text-text">Which financial habit would strengthen your relationship the most?</h2>
+      <div class="mt-7 space-y-3">
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Regular check-ins about money</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Being more open about spending</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Agreeing in advance on big purchases</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">Working toward a shared goal together</p></button>
+        <button class="answer-card w-full text-left p-5 rounded-2xl border border-line"><p class="text-[15px] text-text">More spontaneity, together</p></button>
+      </div>
+    </div>
+    <div class="px-8 pb-8 flex justify-center"><button class="text-[13px] text-muted">← Back</button></div>
+  </div>
+</section>
+
+
+<!-- ============ ASSESSMENT · SECTION 5 — SHARED FUTURE (Q20–Q21) ============ -->
+
+<!-- Q20 · multi-select · Compass anchor 3 of 3 -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">23 · Assessment Q20 · Shared Future</p>
+    <p class="text-sm text-muted mt-1">Multi-select (choose three) · Compass anchor · exactly 8 chips, one per dimension.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-[95%] bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">SHARED FUTURE · 20 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[26px] leading-snug text-text">A wealthy life is rich in…</h2>
+      <p class="mt-2 text-[14px] text-muted">Choose the three that ring truest for you.</p>
+      <div class="mt-7 flex flex-wrap gap-2.5">
+        <button class="px-5 py-3 rounded-full bg-primary text-white text-[14px] font-medium soft-shadow">Security</button>
+        <button class="px-5 py-3 rounded-full bg-card border border-line text-[14px]">Freedom</button>
+        <button class="px-5 py-3 rounded-full bg-card border border-line text-[14px]">Growth</button>
+        <button class="px-5 py-3 rounded-full bg-primary text-white text-[14px] font-medium soft-shadow">Experiences</button>
+        <button class="px-5 py-3 rounded-full bg-primary text-white text-[14px] font-medium soft-shadow">Connection</button>
+        <button class="px-5 py-3 rounded-full bg-card border border-line text-[14px]">Purpose</button>
+        <button class="px-5 py-3 rounded-full bg-card border border-line text-[14px]">Legacy</button>
+        <button class="px-5 py-3 rounded-full bg-card border border-line text-[14px]">Balance</button>
+      </div>
+      <p class="mt-6 text-[13px] text-muted text-center">3 of 3 chosen</p>
+    </div>
+    <div class="px-8 pb-12"><button class="w-full py-4 rounded-xl bg-primary text-white font-medium text-[16px] lift-shadow">Continue</button></div>
+  </div>
+</section>
+
+<!-- Q21 -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">24 · Assessment Q21 · Shared Future</p>
+    <p class="text-sm text-muted mt-1">Selection cards · final question.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-14">
+      <div class="h-1.5 rounded-full bg-card3 overflow-hidden"><div class="h-full w-full bg-primary rounded-full"></div></div>
+      <p class="text-[11px] text-muted mt-2 tracking-wide">SHARED FUTURE · 21 OF 21</p>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <h2 class="font-display font-semibold text-[26px] leading-snug text-text">Which future are you trying to build?</h2>
+      <div class="mt-6 space-y-2.5">
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">One where we never have to worry about the basics</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">One where we have real choices about how we live</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">One where our money keeps working long after we've stopped</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">One full of shared experiences and memories</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">One where family always comes first</p></button>
+        <button class="answer-card w-full text-left px-4 py-3.5 rounded-xl border border-line"><p class="text-[14px] text-text">One where we've made a difference in something bigger than us</p></button>
+      </div>
+    </div>
+    <div class="px-8 pb-8 flex justify-center"><button class="text-[13px] text-muted">← Back</button></div>
+  </div>
+</section>
+
+
+<!-- ============ 11. CALCULATING ============ -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">25 · Calculating</p>
+    <p class="text-sm text-muted mt-1">Dark indigo moment. The sound-wave brand mark animates here (consistent logo); messages rotate ~2s.</p>
+  </div>
+  <div class="phone gradient-ink">
+    <div class="flex-1 flex flex-col items-center justify-center px-10 text-center">
+      <div class="relative w-72 h-24 mb-12">
+        <svg viewBox="0 0 240 60" class="w-full h-full overflow-visible">
+          <defs><clipPath id="cwclip"><rect x="0" y="0" width="240" height="60"/></clipPath></defs>
+          <g clip-path="url(#cwclip)">
+            <path class="wave-a" d="M0,30 C10,10 26,10 36,30 C46,50 62,50 72,30 C82,10 98,10 108,30 C118,50 134,50 144,30 C154,10 170,10 180,30 C190,50 206,50 216,30 C226,10 242,10 252,30" fill="none" stroke="#FF8A3D" stroke-width="4.5" stroke-linecap="round"/>
+            <path class="wave-b" d="M0,30 C10,50 26,50 36,30 C46,10 62,10 72,30 C82,50 98,50 108,30 C118,10 134,10 144,30 C154,50 170,50 180,30 C190,10 206,10 216,30 C226,50 242,50 252,30" fill="none" stroke="#57E0D0" stroke-width="4.5" stroke-linecap="round"/>
+          </g>
+        </svg>
+      </div>
+      <p class="font-display font-semibold text-[22px] text-textdark">Finding your natural direction…</p>
+      <div class="mt-6 flex gap-2 justify-center"><span class="w-1.5 h-1.5 rounded-full bg-purplelight"></span><span class="w-1.5 h-1.5 rounded-full bg-purplelight/50"></span><span class="w-1.5 h-1.5 rounded-full bg-purplelight/25"></span></div>
+      <p class="mt-12 text-[12px] text-muteddark tracking-wide">Also rotating: "Reading your Compass…" ·<br>"Mapping how you navigate…" · "Preparing your insights…"</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ 12. REVEAL — COMPASS ROSE RADAR ============ -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">26 · The Reveal — Compass Rose (Chart.js radar)</p>
+    <p class="text-sm text-muted mt-1">Signature visual. Live Chart.js radar across all 8 dimensions on a dark card. Blurple fill.</p>
+  </div>
+  <div class="phone gradient-ink">
+    <div class="flex-1 flex flex-col items-center px-6 pt-14 pb-10 text-center">
+      <svg viewBox="0 0 120 40" width="54" height="18" class="overflow-visible mb-4"><defs><clipPath id="wcRev"><rect width="120" height="40"/></clipPath></defs><g clip-path="url(#wcRev)"><path class="wave-a" d="M0,20 C10,6 26,6 36,20 C46,34 62,34 72,20 C82,6 98,6 108,20 C118,34 134,34 144,20 C154,6 170,6 180,20 C190,34 206,34 216,20 C226,6 242,6 252,20" fill="none" stroke="#FF8A3D" stroke-width="4" stroke-linecap="round"/><path class="wave-b" d="M0,20 C10,34 26,34 36,20 C46,6 62,6 72,20 C82,34 98,34 108,20 C118,6 134,6 144,20 C154,34 170,34 180,20 C190,6 206,6 216,20 C226,34 242,34 252,20" fill="none" stroke="#57E0D0" stroke-width="4" stroke-linecap="round"/></g></svg>
+      <p class="text-xs tracking-[0.3em] uppercase text-purplelight">Sarah, this is</p>
+      <h2 class="font-display font-semibold text-[30px] text-textdark mt-2">Your Wealth Compass</h2>
+      <div class="mt-6 w-full rounded-2xl p-3 border" style="background:#111B34; border-color:rgba(107,124,153,.22)"><canvas id="revealRadar" width="330" height="330"></canvas></div>
+      <p class="mt-5 text-[14px] leading-relaxed text-textdark/85 px-2">Your compass points most strongly toward <span class="text-purplelight font-medium">Security</span>, <span class="text-purplelight font-medium">Connection</span> and <span class="text-purplelight font-medium">Experiences</span>. This is what your financial decisions naturally work toward.</p>
+      <button class="mt-6 w-full py-4 rounded-xl bg-primarybright text-white font-medium text-[16px] lift-shadow">Explore my Compass</button>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ 13. RESULTS — COMPASS NARRATIVE ============ -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">27 · My Wealth Compass (scrolling)</p>
+    <p class="text-sm text-muted mt-1">Primary &amp; supporting directions (strength shown by blurple opacity), narrative, reflection, next steps. No "strength/weakness" language.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="flex-1 overflow-hidden px-7 pt-14 pb-6 space-y-5">
+      <div><p class="text-xs tracking-[0.25em] uppercase text-primary">Your directions</p><h2 class="font-display font-semibold text-[24px] text-text mt-1">Where your compass points</h2></div>
+      <div class="card-surface rounded-2xl p-5 soft-shadow space-y-3.5">
+        <div><div class="flex justify-between text-[13px] mb-1"><span class="font-medium text-text">🛡 Security</span><span class="text-muted">Primary</span></div><div class="h-2 rounded-full bg-card3"><div class="h-full w-[90%] rounded-full bg-primary"></div></div></div>
+        <div><div class="flex justify-between text-[13px] mb-1"><span class="font-medium text-text">❤️ Connection</span><span class="text-muted">Primary</span></div><div class="h-2 rounded-full bg-card3"><div class="h-full w-[84%] rounded-full bg-primary"></div></div></div>
+        <div><div class="flex justify-between text-[13px] mb-1"><span class="font-medium text-text">✨ Experiences</span><span class="text-muted">Supporting</span></div><div class="h-2 rounded-full bg-card3"><div class="h-full w-[70%] rounded-full bg-primary/70"></div></div></div>
+        <div><div class="flex justify-between text-[13px] mb-1"><span class="font-medium text-text">📈 Growth</span><span class="text-muted">Quieter</span></div><div class="h-2 rounded-full bg-card3"><div class="h-full w-[42%] rounded-full bg-primary/40"></div></div></div>
+        <p class="text-[11px] text-muted pt-1">+ 4 more directions…</p>
+      </div>
+      <div class="rounded-2xl p-5 lift-shadow" style="background:#111B34;">
+        <p class="text-[11px] tracking-[0.2em] uppercase text-purplelight mb-2">What this means</p>
+        <p class="font-display font-semibold text-[18px] leading-snug text-textdark">You tend to make money decisions that create safety and look after the people you love.</p>
+        <p class="text-[13px] text-textdark/70 mt-2 leading-relaxed">With Security and Connection leading your compass, you're drawn to choices that reduce worry and support your family — a steady foundation others rely on.</p>
+      </div>
+      <div class="card-surface rounded-2xl p-5 soft-shadow border-l-4" style="border-left-color:#5851E8">
+        <p class="text-[11px] tracking-[0.2em] uppercase text-primary mb-2">An area to explore</p>
+        <p class="text-[14px] leading-relaxed text-text">Growth sits quieter on your compass right now. You may wish to explore how a little long-term investing could quietly fund the security and experiences you value.</p>
+      </div>
+      <div class="card-surface rounded-2xl p-5 soft-shadow">
+        <p class="text-[11px] tracking-[0.2em] uppercase text-purple mb-2">Worth reflecting on</p>
+        <p class="font-display font-medium text-[16px] text-text leading-snug">"When keeping money safe and enjoying it today pull in different directions, which do you tend to follow?"</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ 14. MY NAVIGATION PREFERENCES ============ -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">28 · My Navigation Preferences (redesigned)</p>
+    <p class="text-sm text-muted mt-1">A left-to-right "journey" line (DISC-style) instead of bars: line height = how strongly you lean at each of the five preferences. Colour-coded nodes + labels. A blend, never one type.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="flex-1 overflow-hidden px-7 pt-14 pb-6 space-y-5">
+      <div><p class="text-xs tracking-[0.25em] uppercase text-primary">How you navigate</p><h2 class="font-display font-semibold text-[24px] text-text mt-1">Your Navigation Preferences</h2>
+        <p class="text-[13px] text-muted mt-2">Everyone is a blend of all five. Here's where you naturally lean.</p></div>
+      <div class="card-surface rounded-2xl p-5 pt-6 soft-shadow">
+        <div class="flex justify-between text-[10px] uppercase tracking-widest text-muted mb-1"><span>How you navigate, step by step</span><span class="text-primary">Higher = stronger lean</span></div>
+        <svg viewBox="0 0 360 252" class="w-full">
+          <defs>
+            <linearGradient id="navLine" gradientUnits="userSpaceOnUse" x1="40" y1="0" x2="320" y2="0">
+              <stop offset="0" stop-color="#5851E8"/><stop offset="0.25" stop-color="#2CA6A4"/><stop offset="0.5" stop-color="#6C63E0"/><stop offset="0.75" stop-color="#E3A94B"/><stop offset="1" stop-color="#17A673"/>
+            </linearGradient>
+          </defs>
+          <!-- faint horizon guides -->
+          <g stroke="#EEF1F7" stroke-width="1">
+            <line x1="24" y1="48" x2="336" y2="48"/><line x1="24" y1="128" x2="336" y2="128"/><line x1="24" y1="208" x2="336" y2="208"/>
+          </g>
+          <!-- soft area under the path -->
+          <path d="M40,62 C75,62 75,138 110,138 C145,138 145,77 180,77 C215,77 215,106 250,106 C285,106 285,163 320,163 L320,208 L40,208 Z" fill="rgba(88,81,232,.05)"/>
+          <!-- depth shadow -->
+          <path d="M40,62 C75,62 75,138 110,138 C145,138 145,77 180,77 C215,77 215,106 250,106 C285,106 285,163 320,163" fill="none" stroke="#0A2540" stroke-opacity="0.06" stroke-width="7" stroke-linecap="round" transform="translate(0,5)"/>
+          <!-- main journey line -->
+          <path d="M40,62 C75,62 75,138 110,138 C145,138 145,77 180,77 C215,77 215,106 250,106 C285,106 285,163 320,163" fill="none" stroke="url(#navLine)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- emoji markers above nodes -->
+          <g font-size="14" text-anchor="middle">
+            <text x="40" y="46">📋</text><text x="110" y="122">🌊</text><text x="180" y="61">🔍</text><text x="250" y="90">🤝</text><text x="320" y="147">🌿</text>
+          </g>
+          <!-- nodes -->
+          <g>
+            <circle cx="40" cy="62" r="7" fill="#5851E8"/><circle cx="40" cy="62" r="3" fill="#fff"/>
+            <circle cx="110" cy="138" r="7" fill="#2CA6A4"/><circle cx="110" cy="138" r="3" fill="#fff"/>
+            <circle cx="180" cy="77" r="7" fill="#6C63E0"/><circle cx="180" cy="77" r="3" fill="#fff"/>
+            <circle cx="250" cy="106" r="7" fill="#E3A94B"/><circle cx="250" cy="106" r="3" fill="#fff"/>
+            <circle cx="320" cy="163" r="7" fill="#17A673"/><circle cx="320" cy="163" r="3" fill="#fff"/>
+          </g>
+          <!-- labels -->
+          <g font-family="'DM Sans',sans-serif" font-size="10.5" font-weight="500" fill="#3A4A63" text-anchor="middle">
+            <text x="40" y="234">Structured</text>
+            <text x="110" y="234">Adaptive</text>
+            <text x="180" y="234">Reflective</text>
+            <text x="250" y="234">Collaborative</text>
+            <text x="320" y="234">Intuitive</text>
+          </g>
+          <g font-family="'DM Sans',sans-serif" font-size="9" fill="#8A97AC" text-anchor="middle">
+            <text x="40" y="247">Often</text>
+            <text x="110" y="247">Sometimes</text>
+            <text x="180" y="247">Often</text>
+            <text x="250" y="247">Sometimes</text>
+            <text x="320" y="247">Rarely</text>
+          </g>
+        </svg>
+      </div>
+      <div class="card-surface rounded-2xl p-4 soft-shadow flex items-start gap-3">
+        <span class="text-lg">📋</span>
+        <p class="text-[13px] text-text leading-relaxed"><span class="font-medium">Your strongest step is Structured.</span> <span class="text-muted">You feel most at home planning ahead — but you flex through all five as situations change.</span></p>
+      </div>
+      <div class="rounded-2xl p-5 lift-shadow" style="background:#111B34;">
+        <p class="text-[11px] tracking-[0.2em] uppercase text-purplelight mb-2">How you tend to decide</p>
+        <p class="text-[14px] text-textdark/85 leading-relaxed">You naturally prefer to plan ahead and understand your options before deciding. You feel most at ease with organised systems and time to think. In fast-moving moments, borrowing a little from your Adaptive side may also help.</p>
+      </div>
+      <div class="card-surface rounded-2xl p-5 soft-shadow border-l-4" style="border-left-color:#6C63E0">
+        <p class="text-[11px] tracking-[0.2em] uppercase text-purple mb-2">Working with others</p>
+        <p class="text-[14px] leading-relaxed text-text">A partner who leans Adaptive may want to decide more quickly than feels comfortable to you. Agreeing when a decision needs research and when it's fine to move fast can help you both.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ 15. CONVERSATION CARDS ============ -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">29 · Conversation Cards</p>
+    <p class="text-sm text-muted mt-1">75+ money-focused prompts, swipeable, shuffled each visit. Bottom CTA invites users into the assessment once they've talked (the entry point for the "conversations first" path).</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="px-8 pt-16 text-center">
+      <p class="text-xs tracking-[0.25em] uppercase text-primary">Conversation Cards</p>
+      <h2 class="font-display font-semibold text-[24px] text-text mt-1">Conversation starters</h2>
+      <p class="text-[13px] text-muted mt-2">Swipe through and talk them over — there are no right answers.</p>
+    </div>
+    <div class="flex-1 flex items-center justify-center px-8 relative">
+      <div class="absolute w-[86%] h-[340px] rounded-2xl bg-card2 border border-line rotate-[4deg] translate-y-3"></div>
+      <div class="absolute w-[88%] h-[345px] rounded-2xl bg-card border border-line -rotate-[3deg] translate-y-1.5 soft-shadow"></div>
+      <div class="relative w-[92%] h-[350px] rounded-2xl bg-card lift-shadow border border-line flex flex-col items-center justify-center p-8 text-center">
+        <span class="absolute top-5 px-3 py-1 rounded-full bg-card2 text-[11px] tracking-wide text-primary uppercase">Security</span>
+        <svg viewBox="0 0 120 40" width="58" height="19" class="overflow-visible mb-5"><defs><clipPath id="wcConv"><rect width="120" height="40"/></clipPath></defs><g clip-path="url(#wcConv)"><path class="wave-a" d="M0,20 C10,6 26,6 36,20 C46,34 62,34 72,20 C82,6 98,6 108,20 C118,34 134,34 144,20 C154,6 170,6 180,20 C190,34 206,34 216,20 C226,6 242,6 252,20" fill="none" stroke="#FF8A3D" stroke-width="4" stroke-linecap="round"/><path class="wave-b" d="M0,20 C10,34 26,34 36,20 C46,6 62,6 72,20 C82,34 98,34 108,20 C118,6 134,6 144,20 C154,34 170,34 180,20 C190,6 206,6 216,20 C226,34 242,34 252,20" fill="none" stroke="#57E0D0" stroke-width="4" stroke-linecap="round"/></g></svg>
+        <p class="font-display font-semibold text-[22px] leading-snug text-text">What does financial security mean to you?</p>
+        <p class="absolute bottom-5 text-[11px] text-muted font-mono">7 / 75</p>
+      </div>
+    </div>
+    <div class="px-8 pb-4 flex justify-center gap-5">
+      <button class="w-14 h-14 rounded-full bg-card border border-line soft-shadow text-muted text-xl">←</button>
+      <button class="w-14 h-14 rounded-full bg-primary text-white lift-shadow text-xl">→</button>
+    </div>
+    <div class="px-7 pb-8">
+      <div class="rounded-2xl p-4 text-center" style="background:#111B34;">
+        <p class="text-[13px] text-textdark/80 leading-relaxed">Had some good conversations? Now discover <span class="text-purplelight">why</span> you each decide the way you do.</p>
+        <button class="mt-3 w-full py-3.5 rounded-xl bg-primarybright text-white font-medium text-[15px] flex items-center justify-center gap-2">Ready to go deeper — take the assessment <span class="text-lg leading-none">›</span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ 16. REPORTS & SHARE (THREE) ============ -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">30 · Reports &amp; partner handoff</p>
+    <p class="text-sm text-muted mt-1">Three reports. Firebase share code + link (encrypted before upload); encrypted file fallback. Shared report locked until partner finishes.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="flex-1 px-7 pt-16 space-y-4">
+      <div class="flex justify-center pb-1"><svg viewBox="0 0 120 40" width="52" height="17" class="overflow-visible"><defs><clipPath id="wcRep"><rect width="120" height="40"/></clipPath></defs><g clip-path="url(#wcRep)"><path class="wave-a" d="M0,20 C10,6 26,6 36,20 C46,34 62,34 72,20 C82,6 98,6 108,20 C118,34 134,34 144,20 C154,6 170,6 180,20 C190,34 206,34 216,20 C226,6 242,6 252,20" fill="none" stroke="#FF8A3D" stroke-width="4" stroke-linecap="round"/><path class="wave-b" d="M0,20 C10,34 26,34 36,20 C46,6 62,6 72,20 C82,34 98,34 108,20 C118,6 134,6 144,20 C154,34 170,34 180,20 C190,6 206,6 216,20 C226,34 242,34 252,20" fill="none" stroke="#57E0D0" stroke-width="4" stroke-linecap="round"/></g></svg></div>
+      <div><p class="text-xs tracking-[0.25em] uppercase text-primary">Keep &amp; share</p><h2 class="font-display font-semibold text-[24px] text-text mt-1">Your reports</h2></div>
+      <div class="card-surface rounded-2xl p-4 soft-shadow flex items-center gap-4"><div class="w-11 h-11 rounded-xl bg-primary/12 flex items-center justify-center text-primary text-lg shrink-0">🧭</div><div class="flex-1"><p class="text-[15px] font-medium text-text">My Wealth Compass</p><p class="text-[12px] text-muted">Your 8 directions, narrative &amp; next steps</p></div><button class="px-4 py-2.5 rounded-lg bg-primary text-white text-[13px] font-medium">PDF</button></div>
+      <div class="card-surface rounded-2xl p-4 soft-shadow flex items-center gap-4"><div class="w-11 h-11 rounded-xl bg-primary/12 flex items-center justify-center text-primary text-lg shrink-0">📊</div><div class="flex-1"><p class="text-[15px] font-medium text-text">My Navigation Preferences</p><p class="text-[12px] text-muted">How you naturally approach money decisions</p></div><button class="px-4 py-2.5 rounded-lg bg-primary text-white text-[13px] font-medium">PDF</button></div>
+      <div class="rounded-2xl p-5 lift-shadow" style="background:#111B34;">
+        <p class="text-[11px] tracking-[0.2em] uppercase text-purplelight mb-2">For your partner</p>
+        <p class="font-display font-semibold text-[18px] leading-snug text-textdark">Invite your partner to take theirs.</p>
+        <p class="text-[13px] text-textdark/70 mt-2 leading-relaxed">Choose a shared passphrase, then send your partner the code below. When they finish, you'll both unlock <span class="text-purplelight">Our Shared Compass</span>.</p>
+        <input class="mt-4 w-full px-4 py-3 rounded-lg bg-white/5 border border-linedark text-[14px] text-textdark placeholder:text-muteddark" placeholder="Choose a passphrase you'll both remember">
+        <div class="mt-3 rounded-lg bg-white/5 border border-linedark p-4 flex items-center justify-between">
+          <div><p class="text-[10px] uppercase tracking-widest text-muteddark">Your share code</p><p class="font-mono text-[24px] tracking-[0.2em] text-purplelight">K7QM</p></div>
+          <button class="px-3.5 py-2 rounded-full bg-primarybright text-white text-[12px] font-medium">Copy link</button>
+        </div>
+        <p class="text-[11px] text-muteddark mt-2">🔒 Encrypted on your device before it's saved — we can't read it.</p>
+        <button class="mt-2 w-full py-2 text-[12px] text-muteddark underline underline-offset-2">or download an encrypted file instead</button>
+      </div>
+      <div class="card-surface rounded-2xl p-4 soft-shadow flex items-center gap-4 opacity-70"><div class="w-11 h-11 rounded-xl bg-card3 flex items-center justify-center text-muted text-lg shrink-0">🔒</div><div class="flex-1"><p class="text-[15px] font-medium text-text">Our Shared Compass</p><p class="text-[12px] text-muted">Unlocks when your partner completes theirs</p></div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ 17. PARTNER TWO — JOIN ============ -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">31 · Partner Two — add their Compass</p>
+    <p class="text-sm text-muted mt-1">From Landing or a shared link. Enter share code + passphrase (file upload fallback) → then take the same journey.</p>
+  </div>
+  <div class="phone gradient-app">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-14 -right-16 w-48 h-48 rounded-full" style="background:radial-gradient(circle,rgba(139,133,255,.14),transparent 70%)"></div>
+      <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full" style="background:radial-gradient(circle,rgba(87,224,208,.12),transparent 70%)"></div>
+    </div>
+    <div class="flex-1 flex flex-col justify-center px-8">
+      <p class="text-xs tracking-[0.25em] uppercase text-primary mb-3">Two compasses</p>
+      <h2 class="font-display font-semibold text-[28px] leading-snug text-text">Add your partner's Compass</h2>
+      <p class="mt-3 text-[15px] text-muted leading-relaxed">Enter the share code they sent you, then take your own journey. At the end, you'll both see your Shared Compass.</p>
+      <div class="mt-8">
+        <label class="text-[13px] font-medium text-text">Share code</label>
+        <input class="mt-2 w-full px-5 py-4 rounded-xl bg-card2 border border-line text-center font-mono text-2xl tracking-[0.35em] uppercase text-text placeholder:text-muted/40 placeholder:tracking-normal placeholder:text-[15px]" placeholder="e.g. K7QM">
+      </div>
+      <div class="mt-4">
+        <label class="text-[13px] font-medium text-text">Shared passphrase</label>
+        <input class="mt-2 w-full px-5 py-4 rounded-xl bg-card2 border border-line text-[15px] placeholder:text-muted/60" placeholder="The word you agreed on together">
+      </div>
+      <p class="mt-3 text-[12px] text-muted text-center">🔒 Their Compass is only unlocked on this device — the passphrase decrypts it.</p>
+      <p class="mt-4 text-[13px] text-muted text-center">No code? <span class="text-primary font-medium underline underline-offset-2">Upload their file instead</span></p>
+    </div>
+    <div class="px-8 pb-12"><button class="w-full py-4 rounded-xl bg-primary text-white font-medium text-[16px] lift-shadow">Unlock &amp; begin my journey</button></div>
+  </div>
+</section>
+
+
+<!-- ============ 18. OUR SHARED COMPASS ============ -->
+<section>
+  <div class="annotation mb-3">
+    <p class="text-xs font-semibold tracking-widest uppercase text-primary">32 · Our Shared Compass — overlaid radar</p>
+    <p class="text-sm text-muted mt-1">Both Compass Roses overlaid (live Chart.js). Language: Shared Direction, Complementary Perspectives, Different Areas of Focus — never right/wrong.</p>
+  </div>
+  <div class="phone gradient-ink">
+    <div class="flex-1 flex flex-col items-center px-7 pt-14 pb-8 text-center">
+      <svg viewBox="0 0 120 40" width="54" height="18" class="overflow-visible mb-4"><defs><clipPath id="wcShr"><rect width="120" height="40"/></clipPath></defs><g clip-path="url(#wcShr)"><path class="wave-a" d="M0,20 C10,6 26,6 36,20 C46,34 62,34 72,20 C82,6 98,6 108,20 C118,34 134,34 144,20 C154,6 170,6 180,20 C190,34 206,34 216,20 C226,6 242,6 252,20" fill="none" stroke="#FF8A3D" stroke-width="4" stroke-linecap="round"/><path class="wave-b" d="M0,20 C10,34 26,34 36,20 C46,6 62,6 72,20 C82,34 98,34 108,20 C118,6 134,6 144,20 C154,34 170,34 180,20 C190,6 206,6 216,20 C226,34 242,34 252,20" fill="none" stroke="#57E0D0" stroke-width="4" stroke-linecap="round"/></g></svg>
+      <p class="text-xs tracking-[0.3em] uppercase text-purplelight">Sarah &amp; James</p>
+      <h2 class="font-display font-semibold text-[28px] text-textdark mt-2">Our Shared Compass</h2>
+      <div class="mt-5 w-full rounded-2xl p-3 border" style="background:#111B34; border-color:rgba(107,124,153,.22)"><canvas id="sharedRadar" width="300" height="300"></canvas></div>
+      <div class="flex gap-5 text-[12px] text-textdark/80 mt-3"><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-primarybright"></span>Sarah</span><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purplelight"></span>James</span></div>
+      <div class="mt-5 w-full rounded-2xl p-4 text-left" style="background:rgba(255,255,255,.05); border:1px solid rgba(107,124,153,.22)">
+        <p class="text-[11px] tracking-[0.2em] uppercase text-purplelight mb-1.5">Shared Direction</p>
+        <p class="text-[13px] text-textdark/85 leading-relaxed">You both point strongly toward <span class="text-purplelight">Security</span>. Feeling financially safe matters to both of you — a shared foundation to build on.</p>
+      </div>
+      <div class="mt-3 w-full rounded-2xl p-4 text-left" style="background:rgba(255,255,255,.05); border:1px solid rgba(107,124,153,.22)">
+        <p class="text-[11px] tracking-[0.2em] uppercase text-purple mb-1.5">Different Areas of Focus</p>
+        <p class="text-[13px] text-textdark/85 leading-relaxed">Sarah leans toward Connection; James toward Growth. Two different ways of building wealth — and a good conversation to have.</p>
+      </div>
+      <button class="mt-5 w-full py-4 rounded-xl bg-primarybright text-white font-medium text-[15px] lift-shadow">Download Our Shared Compass (PDF)</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+
+<!-- ===================== CONTENT APPENDIX ===================== -->
+<section class="max-w-5xl mx-auto px-6 pb-24">
+  <div class="card-surface rounded-2xl p-10 lift-shadow">
+    <h2 class="font-display font-semibold text-2xl text-text">Content &amp; design plan — v3 (for review alongside the screens)</h2>
+    <div class="mt-6 grid md:grid-cols-2 gap-8 text-[14px] leading-relaxed text-text">
+      <div>
+        <h3 class="font-semibold text-text mb-2">Design system · Fintech (Stripe-inspired)</h3>
+        <ul class="space-y-1.5 text-muted">
+          <li>Surfaces: bg <span class="font-mono text-primary">#F6F9FC</span>, card <span class="font-mono text-primary">#FFFFFF</span>, input <span class="font-mono text-primary">#F0F3F9</span></li>
+          <li>Text <span class="font-mono text-primary">#0A2540</span> (high contrast), muted <span class="font-mono text-primary">#5A6B85</span></li>
+          <li>Brand accent: blurple <span class="font-mono text-primary">#5851E8</span> (+ purple <span class="font-mono text-primary">#6C63E0</span> secondary)</li>
+          <li>Type: <strong>Sora</strong> display · <strong>DM Sans</strong> body · <strong>DM Mono</strong> for every <span class="font-mono">$</span> amount &amp; code</li>
+          <li>Radii 16 / 10 / 20 / pill · 8-pt spacing · ≥44pt touch targets</li>
+          <li>Dark "moment" screens use the system's dark surfaces <span class="font-mono text-primary">#0A0E1A → #1C2A4C</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-semibold text-text mb-2">Framework 1 · Wealth Compass (WHY) — 8 directions</h3>
+        <ul class="space-y-1.5 text-muted">
+          <li>🛡 Security · 🕊 Freedom · 📈 Growth · ✨ Experiences</li>
+          <li>❤️ Connection · 🎯 Purpose · 🌳 Legacy · ⚖️ Balance</li>
+        </ul>
+        <p class="mt-2 text-muted">Shown as the <strong>Compass Rose radar</strong> (Chart.js) in blurple — the signature visual. Strength read via bar fill/opacity, no per-dimension colours.</p>
+        <h3 class="font-semibold text-text mt-4 mb-2">Framework 2 · Navigation Preferences (HOW) — 5</h3>
+        <p class="text-muted">📋 Structured · 🌊 Adaptive · 🔍 Reflective · 🤝 Collaborative · 🌿 Intuitive — a <strong>blend</strong>, shown as bars. Never a "type".</p>
+      </div>
+      <div>
+        <h3 class="font-semibold text-text mb-2">Assessment · 21 questions, 5 sections (trimmed)</h3>
+        <ul class="space-y-1.5 list-disc pl-5 text-muted">
+          <li>1 · Your Money Story (Q1–4)</li>
+          <li>2 · Navigation Preferences (Q5–8)</li>
+          <li>3 · Your Wealth Compass (Q9–14)</li>
+          <li>4 · Money Together (Q15–19)</li>
+          <li>5 · Shared Future (Q20–21)</li>
+        </ul>
+        <p class="mt-2 text-muted">Interactions vary: selection cards, sliders, budget allocation, ranking, multi-select, scenarios. <strong>Weighted</strong> scoring — balance guaranteed by 6 anchor questions (3 per framework, one option per category): Compass via Q10/Q17/Q20, Navigation via Q5/Q7/Q8.</p>
+      </div>
+      <div>
+        <h3 class="font-semibold text-text mb-2">Sharing &amp; storage</h3>
+        <ul class="space-y-1.5 list-disc pl-5 text-muted">
+          <li><strong>Netlify</strong> hosts the app; <strong>Firebase (Firestore)</strong> stores shared profiles (client-side SDK, no server code)</li>
+          <li>Handoff: <strong>cloud share code + link</strong> (primary), <strong>encrypted file</strong> fallback</li>
+          <li>Passphrase-encrypted on-device before upload — Firestore holds only ciphertext</li>
+          <li>Trade-off: one-time Firebase setup + security rules (no longer zero-config)</li>
+        </ul>
+      </div>
+      <div class="md:col-span-2">
+        <h3 class="font-semibold text-text mb-2">Reports &amp; tone</h3>
+        <ul class="space-y-1.5 list-disc pl-5 text-muted">
+          <li>Three PDFs: <strong>My Wealth Compass</strong>, <strong>My Navigation Preferences</strong>, <strong>Our Shared Compass</strong> (overlaid roses; Shared Direction / Complementary Perspectives / Different Areas of Focus / Opportunities for Alignment / 90-day plan)</li>
+          <li><strong>Avoid:</strong> personality, strength, weakness, right, wrong, good, bad, must, should — and spender/saver/risk-taker labels</li>
+          <li><strong>Use:</strong> "your compass naturally points towards…", "you tend to prioritise…", "you may wish to explore…", "together you can…"</li>
+          <li>Calm, curious, encouraging, premium — grounded copy, no purple prose. Recurring question: "What kind of financial future are we building together?"</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script>
+  // ---- Chart.js Compass Rose radars (fintech blurple) ----
+  Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+  const DIMS = ['🛡 Security','🕊 Freedom','📈 Growth','✨ Experiences','❤️ Connection','🎯 Purpose','🌳 Legacy','⚖️ Balance'];
+
+  function roseScaleDark() {
+    return {
+      r: {
+        min: 0, max: 100, beginAtZero: true,
+        ticks: { display: false, stepSize: 25 },
+        grid: { color: 'rgba(130,145,173,.22)' },
+        angleLines: { color: 'rgba(130,145,173,.22)' },
+        pointLabels: { color: '#EAF0FA', font: { size: 11, weight: '500' } }
+      }
+    };
+  }
+
+  window.addEventListener('load', function () {
+    new Chart(document.getElementById('revealRadar'), {
+      type: 'radar',
+      data: { labels: DIMS, datasets: [{
+        data: [90, 55, 42, 70, 84, 50, 38, 62],
+        backgroundColor: 'rgba(99,91,255,.30)', borderColor: '#635BFF', borderWidth: 2,
+        pointBackgroundColor: '#635BFF', pointRadius: 3
+      }]},
+      options: { responsive:false, plugins:{legend:{display:false}}, scales: roseScaleDark() }
+    });
+
+    new Chart(document.getElementById('sharedRadar'), {
+      type: 'radar',
+      data: { labels: DIMS, datasets: [
+        { label:'Sarah', data:[90,55,42,70,84,50,38,62], backgroundColor:'rgba(99,91,255,.22)', borderColor:'#635BFF', borderWidth:2, pointBackgroundColor:'#635BFF', pointRadius:2.5 },
+        { label:'James', data:[80,60,82,58,52,66,70,48], backgroundColor:'rgba(139,133,255,.16)', borderColor:'#8B85FF', borderWidth:2, pointBackgroundColor:'#8B85FF', pointRadius:2.5, borderDash:[5,4] }
+      ]},
+      options: { responsive:false, plugins:{legend:{display:false}}, scales: roseScaleDark() }
+    });
+  });
+</script>
+
+</body>
+</html>

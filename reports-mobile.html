@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Wealth Compass™ — My Reports</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#F6F9FC; --card:#FFFFFF; --card2:#F0F3F9; --card3:#E7ECF5;
+    --primary:#5851E8; --primarybright:#635BFF; --purple:#6C63E0; --purplelight:#8B85FF;
+    --success:#0F9E73; --warn:#C97A0E; --text:#0A2540; --muted:#5A6B85; --line:rgba(10,37,64,.12);
+    --ink:#111B34; --textdark:#EAF0FA;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);font-family:'DM Sans',system-ui,sans-serif;color:var(--text);}
+  .display{font-family:'Sora',system-ui,sans-serif;}
+  .mono{font-family:'DM Mono',ui-monospace,monospace;}
+
+  .shell{max-width:440px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;padding-bottom:calc(28px + env(safe-area-inset-bottom));}
+
+  header{position:sticky;top:0;z-index:20;background:rgba(246,249,252,.86);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:max(12px,env(safe-area-inset-top)) 18px 10px;}
+  .topline{display:flex;align-items:center;justify-content:space-between;}
+  .brand{display:flex;align-items:center;gap:8px;font-family:'Sora';font-weight:600;font-size:14px;}
+  .backlink{font-size:13px;color:var(--muted);text-decoration:none;padding:8px;min-height:44px;display:inline-flex;align-items:center;gap:3px;}
+  .tabs{display:flex;gap:6px;margin-top:10px;background:var(--card2);padding:4px;border-radius:12px;}
+  .tab{flex:1;border:0;background:transparent;border-radius:9px;padding:9px 4px;font-size:12.5px;font-weight:600;color:var(--muted);font-family:'DM Sans';cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.1;transition:background .15s,color .15s;}
+  .tab .ico{font-size:15px;}
+  .tab.active{background:#fff;color:var(--primary);box-shadow:0 1px 4px rgba(10,37,64,.08);}
+
+  main{padding:18px 18px 28px;}
+  .report{display:none;animation:fade .25s ease;}
+  .report.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  @media (prefers-reduced-motion: reduce){ .report{animation:none;} }
+
+  .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--primary);}
+  h1.title{font-family:'Sora';font-weight:600;font-size:26px;margin:5px 0 3px;letter-spacing:-.01em;line-height:1.12;}
+  .sub{font-size:13px;color:var(--muted);margin:0;}
+  .meta{font-size:12px;color:var(--muted);margin-top:2px;}
+
+  h2.sec{font-family:'Sora';font-weight:600;font-size:14px;margin:24px 0 10px;display:flex;align-items:center;gap:8px;}
+  h2.sec .num{width:20px;height:20px;border-radius:6px;background:var(--card2);color:var(--primary);font-size:11px;display:inline-flex;align-items:center;justify-content:center;font-family:'DM Mono';flex-shrink:0;}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 17px;}
+  .card+.card{margin-top:11px;}
+  .card.tint{background:var(--card2);border-color:transparent;}
+  .card.dark{background:var(--ink);color:var(--textdark);border:0;}
+  .card.rule{border-left:4px solid var(--primary);}
+  .lead{font-size:15px;line-height:1.5;margin:0;}
+  .body{font-size:13.5px;line-height:1.6;color:var(--muted);margin:6px 0 0;}
+  .dark .body{color:rgba(234,240,250,.78);}
+  .card.dark .eyebrow{color:var(--purplelight);}
+  .card.tint .eyebrow, .card.rule .eyebrow{color:var(--primary);}
+
+  .radarcard{background:var(--ink);border-radius:18px;padding:14px 10px 8px;margin-top:14px;}
+  .radarcard .cvwrap{width:100%;max-width:320px;margin:0 auto;}
+  .radarcard canvas{display:block;margin:0 auto;width:100%;max-width:300px;height:auto;}
+  .legend{display:flex;justify-content:center;gap:18px;font-size:12px;color:var(--textdark);padding:8px 0 4px;}
+  .legend .row{display:flex;align-items:center;gap:7px;}
+  .swatch{width:12px;height:12px;border-radius:3px;}
+
+  .bars{display:flex;flex-direction:column;gap:12px;}
+  .bar-row{display:flex;flex-direction:column;gap:6px;}
+  .bar-top{display:flex;justify-content:space-between;font-size:13.5px;}
+  .bar-top .tier{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;align-self:center;}
+  .track{height:9px;border-radius:99px;background:var(--card3);}
+  .fill{height:100%;border-radius:99px;background:var(--primary);}
+
+  .journey{width:100%;height:auto;display:block;}
+  .journey text{font-family:'DM Sans';}
+
+  .starters{display:flex;flex-direction:column;gap:9px;}
+  .starter{background:var(--card2);border-radius:12px;padding:13px 15px;font-size:13.5px;font-family:'Sora';font-weight:500;line-height:1.35;}
+
+  .closing{text-align:center;font-family:'Sora';font-weight:500;font-size:17px;margin:26px 8px 8px;line-height:1.35;color:var(--text);}
+  .privacy{text-align:center;font-size:11px;color:var(--muted);margin-top:20px;}
+
+  .empty{text-align:center;padding:64px 24px;}
+  .empty h1{font-family:'Sora';font-size:22px;margin:10px 0 8px;}
+  .empty a{color:var(--primary);font-weight:600;text-decoration:none;}
+  .locked{text-align:center;padding:56px 20px;}
+  .locked h1{font-family:'Sora';font-size:22px;margin:10px 0 8px;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div class="topline">
+      <div class="brand">
+        <svg width="60" height="18" viewBox="0 0 72 20"><path d="M0,10 C5,3 13,3 18,10 C23,17 31,17 36,10 C41,3 49,3 54,10 C59,17 67,17 72,10" fill="none" stroke="#FF8A3D" stroke-width="2.4" stroke-linecap="round"/><path d="M0,10 C5,17 13,17 18,10 C23,3 31,3 36,10 C41,17 49,17 54,10 C59,3 67,3 72,10" fill="none" stroke="#57E0D0" stroke-width="2.4" stroke-linecap="round"/></svg>
+        Wealth Compass™
+      </div>
+      <a href="index.html" class="backlink">‹ App</a>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-r="r1"><span class="ico">🧭</span>My Compass</button>
+      <button class="tab" data-r="r2"><span class="ico">📊</span>Navigation</button>
+      <button class="tab" data-r="r3"><span class="ico">🤝</span>Shared</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="report active" id="r1"></section>
+    <section class="report" id="r2"></section>
+    <section class="report" id="r3"></section>
+  </main>
+</div>
+
+<script type="module">
+import { buildCompassResult, buildNavigationResult, buildSharedResult } from './src/results.js';
+
+const el = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+const today = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+
+const [A, C] = await Promise.all([
+  fetch('src/data/assessment.json').then((r) => r.json()),
+  fetch('src/data/copy.json').then((r) => r.json()),
+]);
+let state = {};
+try { state = JSON.parse(localStorage.getItem('wealthcompass.v3')) || {}; } catch {}
+const name = state.name || '';
+const who = `${name ? esc(name) + "'s" : 'Your'} report`;
+const hasPartner = !!(state.partner && state.partner.scores);
+
+// ---- charts (responsive, real data) ----
+Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+const DIMS = A.compass.map((d) => `${d.icon} ${d.name}`);
+const scale = () => ({ r: { min:0, max:100, beginAtZero:true, ticks:{ display:false, stepSize:25 },
+  grid:{ color:'rgba(130,145,173,.22)' }, angleLines:{ color:'rgba(130,145,173,.22)' },
+  pointLabels:{ color:'#EAF0FA', font:{ size:9.5, weight:'500' } } } });
+const madeCharts = {};
+function makeRose(id, datasets) {
+  if (madeCharts[id]) return;
+  const canvas = el('#' + id); if (!canvas) return;
+  madeCharts[id] = new Chart(canvas, { type:'radar', data:{ labels:DIMS, datasets },
+    options:{ responsive:false, plugins:{ legend:{ display:false } }, scales:scale() } });
+}
+const roseData = (scores, color, dash) => ({ data: A.compass.map((d) => scores.compass[d.id]),
+  backgroundColor: dash ? 'rgba(139,133,255,.16)' : 'rgba(99,91,255,.28)', borderColor: color, borderWidth: 2,
+  pointBackgroundColor: color, pointRadius: 2.2, ...(dash ? { borderDash:[5,4] } : {}) });
+
+// ---- navigation journey (1 or 2 lines) ----
+const navPts = (scores) => { const xs=[40,110,180,250,320]; const y=(s)=>185-(s/100)*120;
+  return A.navigation.map((d,i)=>({ x:xs[i], icon:d.icon, name:d.name, y:y(scores.navigation[d.id]) })); };
+const navPath = (pts) => pts.map((p,i)=> i===0 ? `M${p.x},${p.y}` : `C${pts[i-1].x+35},${pts[i-1].y} ${p.x-35},${p.y} ${p.x},${p.y}`).join(' ');
+function journeySvg(scores, partnerScores) {
+  const mine = navPts(scores); const p2 = partnerScores ? navPts(partnerScores) : null;
+  return `<svg class="journey" viewBox="0 0 360 240" role="img" aria-label="Line chart of the five navigation preferences; each is listed below.">
+    <g stroke="#EEF1F7" stroke-width="1"><line x1="20" y1="55" x2="340" y2="55"/><line x1="20" y1="115" x2="340" y2="115"/><line x1="20" y1="175" x2="340" y2="175"/></g>
+    ${p2 ? `<path d="${navPath(p2)}" fill="none" stroke="#8B85FF" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="6 5"/>` : ''}
+    <path d="${navPath(mine)}" fill="none" stroke="#5851E8" stroke-width="4.5" stroke-linecap="round"/>
+    ${mine.map((p)=>`<circle cx="${p.x}" cy="${p.y}" r="6" fill="#5851E8"/><circle cx="${p.x}" cy="${p.y}" r="2.5" fill="#fff"/>`).join('')}
+    ${p2 ? p2.map((p)=>`<circle cx="${p.x}" cy="${p.y}" r="5" fill="#8B85FF"/>`).join('') : ''}
+    <g font-size="15" text-anchor="middle">${mine.map((p)=>`<text x="${p.x}" y="42">${p.icon}</text>`).join('')}</g>
+    <g font-size="10" font-weight="500" fill="#3A4A63" text-anchor="middle">${mine.map((p)=>`<text x="${p.x}" y="222">${esc(p.name)}</text>`).join('')}</g>
+  </svg>`;
+}
+
+function renderAll() {
+  // R1 · Compass
+  const r = buildCompassResult(A, C, state.scores);
+  const bars = r.ranked.map((d) => `<div class="bar-row"><div class="bar-top"><span>${d.icon} ${esc(d.name)}</span><span class="tier">${esc(d.tier)}</span></div><div class="track"><div class="fill" style="width:${d.score}%"></div></div></div>`).join('');
+  el('#r1').innerHTML = `
+    <p class="eyebrow">${who}</p>
+    <h1 class="title">My Wealth Compass</h1>
+    <p class="meta">Prepared ${today} · 🔒 Private to you</p>
+    <div class="radarcard"><div class="cvwrap"><canvas id="rose1" width="300" height="300" role="img" aria-label="Radar chart of your eight compass directions; each is listed below."></canvas></div>
+      <div class="legend"><div class="row"><span class="swatch" style="background:var(--primarybright)"></span> Your Compass Rose</div></div></div>
+    <p class="body" style="color:var(--text);font-size:14.5px;margin-top:14px">${esc(r.summary)}</p>
+    <h2 class="sec"><span class="num">1</span> Your directions</h2>
+    <div class="card"><div class="bars">${bars}</div></div>
+    <h2 class="sec"><span class="num">2</span> What this means</h2>
+    <div class="card dark"><p class="lead display" style="font-weight:600;font-size:16px">${esc(r.whatThisMeans.lead)}</p><p class="body">${esc(r.whatThisMeans.body)}</p></div>
+    <h2 class="sec"><span class="num">3</span> An area to explore</h2>
+    <div class="card rule"><p class="body" style="color:var(--text)">${esc(r.areaToExplore)}</p></div>
+    <h2 class="sec"><span class="num">4</span> Worth reflecting on</h2>
+    <div class="card tint"><p class="lead display" style="font-weight:500;font-size:15px">“${esc(r.reflection)}”</p></div>
+    <h2 class="sec"><span class="num">5</span> A practical next step</h2>
+    <div class="card"><p class="body" style="color:var(--text)">${esc(r.nextStep)}</p></div>
+    <p class="privacy">🔒 Encrypted on your device — we can't read it.</p>`;
+
+  // R2 · Navigation
+  const n = buildNavigationResult(A, C, state.scores);
+  el('#r2').innerHTML = `
+    <p class="eyebrow">${who}</p>
+    <h1 class="title">My Navigation Preferences</h1>
+    <p class="meta">How you approach decisions · 🔒 Private to you</p>
+    <p class="body" style="color:var(--text);font-size:14px;margin-top:12px">${esc(C.screens.navigationResult.subhead)}</p>
+    <h2 class="sec"><span class="num">1</span> How you navigate</h2>
+    <div class="card">${journeySvg(state.scores)}</div>
+    <div class="card tint" style="margin-top:11px;display:flex;gap:11px;align-items:flex-start"><span style="font-size:19px">${n.strongest.icon}</span><p class="lead" style="font-size:14px">${esc(n.summary)}</p></div>
+    <h2 class="sec"><span class="num">2</span> How you tend to decide</h2>
+    <div class="card dark"><p class="body" style="font-size:14px">${esc(n.decide)}</p></div>
+    <h2 class="sec"><span class="num">3</span> Working with others</h2>
+    <div class="card rule"><p class="body" style="color:var(--text)">${esc(n.withOthers)}</p></div>
+    <p class="privacy">🔒 Encrypted on your device — we can't read it.</p>`;
+
+  // R3 · Shared (only if a partner Compass is present)
+  if (!hasPartner) {
+    el('#r3').innerHTML = `<div class="locked"><div style="font-size:34px">🤝</div><h1>Our Shared Compass</h1><p class="body" style="color:var(--muted)">This unlocks once your partner adds their Compass. Invite them from the app, then come back.</p><p style="margin-top:16px"><a href="index.html" class="backlink" style="color:var(--primary)">Invite your partner →</a></p></div>`;
+  } else {
+    const names = { me: name || 'You', partner: state.partner.name || 'Partner' };
+    const s = buildSharedResult(A, C, state.scores, state.partner.scores, names);
+    const allCards = []; for (const items of Object.values(C.conversationCards || {})) allCards.push(...items);
+    const starters = allCards.sort(() => Math.random() - 0.5).slice(0, 3);
+    el('#r3').innerHTML = `
+      <p class="eyebrow">${esc(names.me)} &amp; ${esc(names.partner)}</p>
+      <h1 class="title">Our Shared Compass</h1>
+      <p class="meta">Two compasses, one direction</p>
+      <div class="radarcard"><div class="cvwrap"><canvas id="rose3" width="300" height="300" role="img" aria-label="Overlaid radar comparing both partners across the eight directions."></canvas></div>
+        <div class="legend"><div class="row"><span class="swatch" style="background:var(--primarybright)"></span> ${esc(names.me)}</div><div class="row"><span class="swatch" style="background:var(--purplelight)"></span> ${esc(names.partner)}</div></div></div>
+      <p class="body" style="color:var(--text);font-size:13.5px;margin-top:12px">Where the two shapes overlap, you're aligned. Where they differ, there's a conversation worth having — not a problem to fix.</p>
+      <h2 class="sec"><span class="num">1</span> ${esc(C.screens.shared.directionLabel)}</h2>
+      <div class="card dark"><p class="body" style="font-size:14px">${esc(s.sharedDirection)}</p></div>
+      <h2 class="sec"><span class="num">2</span> ${esc(C.screens.shared.focusLabel)}</h2>
+      <div class="card rule"><p class="body" style="color:var(--text)">${esc(s.differentFocus)}</p></div>
+      <h2 class="sec"><span class="num">3</span> How you each navigate</h2>
+      <div class="card">
+        <div class="legend" style="justify-content:flex-end;color:var(--text);padding-top:0;margin-bottom:2px"><div class="row"><span class="swatch" style="background:#5851E8"></span> ${esc(names.me)}</div><div class="row"><span class="swatch" style="background:#8B85FF"></span> ${esc(names.partner)}</div></div>
+        ${journeySvg(state.scores, state.partner.scores)}
+      </div>
+      <h2 class="sec"><span class="num">4</span> Conversation starters</h2>
+      <div class="starters">${starters.map((q) => `<div class="starter">${esc(q)}</div>`).join('')}</div>
+      <p class="closing">${esc(s.closing)}</p>`;
+  }
+
+  makeRose('rose1', [roseData(state.scores, '#635BFF', false)]);
+}
+
+// ---- tabs + deep link (?tab=compass|navigation|shared) ----
+const TAB = { compass:'r1', navigation:'r2', shared:'r3' };
+const tabsEl = document.getElementById('tabs');
+function show(rid) {
+  tabsEl.querySelectorAll('.tab').forEach((t) => t.classList.toggle('active', t.dataset.r === rid));
+  document.querySelectorAll('.report').forEach((sec) => sec.classList.toggle('active', sec.id === rid));
+  window.scrollTo({ top: 0 });
+  if (rid === 'r3' && hasPartner && state.scores) makeRose('rose3', [roseData(state.scores, '#635BFF', false), roseData(state.partner.scores, '#8B85FF', true)]);
+}
+tabsEl.addEventListener('click', (e) => { const b = e.target.closest('.tab'); if (b) show(b.dataset.r); });
+
+// ---- boot (after everything above is defined) ----
+if (!state.scores) {
+  tabsEl.style.display = 'none';
+  el('#r1').innerHTML = `<div class="empty"><div style="font-size:34px">🧭</div><h1>Nothing to show yet</h1><p class="body" style="color:var(--muted)">Finish the assessment in the app first — your reports will appear here.</p><p style="margin-top:18px"><a href="index.html">← Back to Wealth Compass</a></p></div>`;
+} else {
+  renderAll();
+  const wanted = TAB[new URLSearchParams(location.search).get('tab')];
+  if (wanted) show(wanted);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Wealth Compass™ — Discover your financial direction</title>
+<meta name="description" content="A short, private assessment that maps how you think, feel and act about money — and the future you're building. Discover your direction, and your partner's." />
+<meta name="theme-color" content="#5851E8" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="favicon.svg" />
+<meta name="apple-mobile-web-app-title" content="Wealth Compass" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Wealth Compass™" />
+<meta property="og:description" content="Discover your financial direction — and your partner's. A short, private assessment about how you think, feel and act with money." />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Wealth Compass™" />
+<meta name="twitter:description" content="Discover your financial direction — and your partner's." />
+
+<!-- Tailwind is precompiled to styles/tailwind.css (npm run build:css). Design
+     tokens live in tailwind.config.js. Chart.js stays on the CDN. -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles/tailwind.css" />
+<link rel="stylesheet" href="styles/theme.css" />
+</head>
+<body class="font-body text-text">
+  <!-- The whole SPA renders into this phone frame -->
+  <div id="app" class="phone gradient-app"></div>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

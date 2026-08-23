@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "wealth-compass", "runtimeExecutable": "node", "runtimeArgs": ["server.js"], "port": 8123, "autoPort": true }
+  ]
+}

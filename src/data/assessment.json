@@ -1,0 +1,278 @@
+{
+  "version": "v3-trimmed-21",
+  "notes": "Source of truth for questions + scoring. Built from wealth-compass-assessment-trimmed.md. Dimension tags map to `weights`. Dual-tag options split weight evenly (see scoring.dualTagEach). `[narrative only]` options carry no weights but are stored for report personalisation.",
+  "scoring": {
+    "singleTag": 2,
+    "dualTagEach": 1,
+    "rankWeights": [3, 2, 1],
+    "multiPick": 2,
+    "allocationScale": 8,
+    "normalizeRange": [30, 95]
+  },
+  "compass": [
+    { "id": "security",    "icon": "🛡", "name": "Security",    "meaning": "Stability, safety, peace of mind, freedom from money stress" },
+    { "id": "freedom",     "icon": "🕊", "name": "Freedom",     "meaning": "Choice, flexibility, independence, options" },
+    { "id": "growth",      "icon": "📈", "name": "Growth",      "meaning": "Investing, building wealth, long-term thinking" },
+    { "id": "experiences", "icon": "✨", "name": "Experiences", "meaning": "Travel, memories, enjoyment, living well today" },
+    { "id": "connection",  "icon": "❤️", "name": "Connection",  "meaning": "Family, generosity, supporting loved ones, belonging" },
+    { "id": "purpose",     "icon": "🎯", "name": "Purpose",     "meaning": "Meaning, impact, contribution, values" },
+    { "id": "legacy",      "icon": "🌳", "name": "Legacy",      "meaning": "Future generations, stewardship, leaving something behind" },
+    { "id": "balance",     "icon": "⚖️", "name": "Balance",     "meaning": "Living well today while planning for tomorrow" }
+  ],
+  "navigation": [
+    { "id": "structured",    "icon": "📋", "name": "Structured",    "meaning": "Planning, budgeting, routines, organised systems" },
+    { "id": "adaptive",      "icon": "🌊", "name": "Adaptive",      "meaning": "Flexibility, adjusting as circumstances change" },
+    { "id": "reflective",    "icon": "🔍", "name": "Reflective",    "meaning": "Research, understanding options, informed decisions" },
+    { "id": "collaborative", "icon": "🤝", "name": "Collaborative", "meaning": "Discussing, seeking advice, deciding together" },
+    { "id": "intuitive",     "icon": "🌿", "name": "Intuitive",     "meaning": "Simple systems, trusting instinct, keeping money light" }
+  ],
+  "sections": [
+    { "id": 1, "label": "Your Money Story", "eyebrow": "Looking back" },
+    { "id": 2, "label": "How You Navigate", "eyebrow": "" },
+    { "id": 3, "label": "Your Wealth Compass", "eyebrow": "" },
+    { "id": 4, "label": "Money Together", "eyebrow": "" },
+    { "id": 5, "label": "Shared Future", "eyebrow": "" }
+  ],
+  "questions": [
+    {
+      "id": "q1", "section": 1, "type": "single", "eyebrow": "Looking back",
+      "prompt": "Growing up, money was mostly…",
+      "helper": "Tap one — it continues automatically",
+      "options": [
+        { "label": "Something we had enough of", "sub": "Money felt steady and rarely worried about.", "narrativeOnly": true, "tag": "steady" },
+        { "label": "Something to be careful with", "sub": "We made it work, but always watched it closely.", "narrativeOnly": true, "tag": "careful" },
+        { "label": "A source of stress", "sub": "There often wasn't quite enough to go around.", "narrativeOnly": true, "tag": "stress" },
+        { "label": "Rarely talked about", "sub": "Money stayed behind closed doors.", "narrativeOnly": true, "tag": "unspoken" }
+      ]
+    },
+    {
+      "id": "q2", "section": 1, "type": "single", "eyebrow": "Looking back",
+      "prompt": "Which financial lesson shaped you most?",
+      "options": [
+        { "label": "Save first, spend what's left", "sub": "A habit that's stayed with me since I was young.", "weights": { "security": 2 } },
+        { "label": "Money is meant to be enjoyed, not hoarded", "sub": "Life's too short to only save for later.", "weights": { "experiences": 2 } },
+        { "label": "Look after your own before anyone else", "sub": "Family comes before anything else financially.", "weights": { "connection": 2 } },
+        { "label": "Never depend on someone else for your money", "sub": "Independence mattered more than comfort.", "weights": { "freedom": 2 } },
+        { "label": "I don't think I learned one, really", "sub": "It wasn't something we talked about.", "narrativeOnly": true }
+      ]
+    },
+    {
+      "id": "q3", "section": 1, "type": "single", "eyebrow": "Looking back",
+      "prompt": "Today, money makes me feel…",
+      "options": [
+        { "label": "Steady", "sub": "I mostly don't think about it day to day.", "weights": { "security": 2 } },
+        { "label": "Motivated", "sub": "It's something I enjoy working toward.", "weights": { "growth": 2 } },
+        { "label": "Anxious sometimes", "sub": "It's there in the back of my mind.", "narrativeOnly": true },
+        { "label": "Free", "sub": "It opens doors more than it closes them.", "weights": { "freedom": 2 } },
+        { "label": "Complicated", "sub": "Good and hard feelings, depending on the day.", "narrativeOnly": true }
+      ]
+    },
+    {
+      "id": "q4", "section": 1, "type": "single", "eyebrow": "Looking back",
+      "prompt": "Financial success means…",
+      "options": [
+        { "label": "Not lying awake worrying about it", "weights": { "security": 2 } },
+        { "label": "Having the freedom to make my own choices", "weights": { "freedom": 2 } },
+        { "label": "Watching what I have grow over time", "weights": { "growth": 2 } },
+        { "label": "Being able to say yes to the things I love", "weights": { "experiences": 2 } },
+        { "label": "Knowing the people I love are taken care of", "weights": { "connection": 2 } }
+      ]
+    },
+
+    {
+      "id": "q5", "section": 2, "type": "single", "anchor": "navigation",
+      "prompt": "Which budgeting approach feels most like you?",
+      "options": [
+        { "label": "📋 A detailed budget I track closely", "weights": { "structured": 2 } },
+        { "label": "🌊 Rough guardrails I adjust as I go", "weights": { "adaptive": 2 } },
+        { "label": "🔍 I research the big things, wing the rest", "weights": { "reflective": 2 } },
+        { "label": "🤝 My partner and I manage it together", "weights": { "collaborative": 2 } },
+        { "label": "🌿 A simple system I barely think about", "weights": { "intuitive": 2 } }
+      ]
+    },
+    {
+      "id": "q6", "section": 2, "type": "slider",
+      "prompt": "How confident do you feel making financial decisions?",
+      "helper": "Drag to wherever feels honest",
+      "leftLabel": "Still learning", "rightLabel": "Very confident",
+      "midLabel": "Fairly confident", "default": 66,
+      "lowWeights": { "reflective": 2 }, "highWeights": { "intuitive": 2 }
+    },
+    {
+      "id": "q7", "section": 2, "type": "single", "anchor": "navigation",
+      "prompt": "How far ahead do you typically plan financially?",
+      "options": [
+        { "label": "The next few weeks", "weights": { "adaptive": 2 } },
+        { "label": "About a year, with a rough plan in place", "weights": { "structured": 2 } },
+        { "label": "Several years, after looking into the details", "weights": { "reflective": 2 } },
+        { "label": "It's something we figure out together as we go", "weights": { "collaborative": 2 } },
+        { "label": "I don't tend to plan that far ahead", "weights": { "intuitive": 2 } }
+      ]
+    },
+    {
+      "id": "q8", "section": 2, "type": "single", "anchor": "navigation",
+      "prompt": "Which statement feels most like you?",
+      "options": [
+        { "label": "I like having a detailed plan", "weights": { "structured": 2 } },
+        { "label": "I prefer to stay flexible", "weights": { "adaptive": 2 } },
+        { "label": "I research before deciding", "weights": { "reflective": 2 } },
+        { "label": "I like discussing decisions with others", "weights": { "collaborative": 2 } },
+        { "label": "I trust my instincts and keep it simple", "weights": { "intuitive": 2 } }
+      ]
+    },
+
+    {
+      "id": "q9", "section": 3, "type": "allocation", "total": 100000,
+      "prompt": "$100,000 arrives tomorrow. How would you divide it?",
+      "helper": "Drag the amounts — they always add to $100k.",
+      "confirm": "$100,000 allocated ✓",
+      "buckets": [
+        { "label": "🛡 Save for safety", "dim": "security", "default": 40 },
+        { "label": "📈 Invest to grow", "dim": "growth", "default": 25 },
+        { "label": "✨ Experiences & travel", "dim": "experiences", "default": 20 },
+        { "label": "❤️ Help family", "dim": "connection", "default": 10 },
+        { "label": "🌳 Give / leave behind", "dim": "legacy", "default": 5 }
+      ]
+    },
+    {
+      "id": "q10", "section": 3, "type": "single", "anchor": "compass",
+      "prompt": "Which financial outcome matters most?",
+      "options": [
+        { "label": "Feeling safe, whatever happens", "weights": { "security": 2 } },
+        { "label": "Having the freedom to choose how I spend my time", "weights": { "freedom": 2 } },
+        { "label": "Watching my money grow", "weights": { "growth": 2 } },
+        { "label": "Making the most of life now", "weights": { "experiences": 2 } },
+        { "label": "Looking after the people close to me", "weights": { "connection": 2 } },
+        { "label": "Putting money toward something meaningful", "weights": { "purpose": 2 } },
+        { "label": "Leaving something behind for those who come after", "weights": { "legacy": 2 } },
+        { "label": "A good balance of today and tomorrow", "weights": { "balance": 2 } }
+      ]
+    },
+    {
+      "id": "q11", "section": 3, "type": "single",
+      "prompt": "Which financial situation would you most like to feel more ease around?",
+      "options": [
+        { "label": "An unexpected expense", "weights": { "security": 2 } },
+        { "label": "Feeling stuck with fewer options than I'd like", "weights": { "freedom": 2 } },
+        { "label": "Not investing as much as I'd like to", "weights": { "growth": 2 } },
+        { "label": "Not spending on the things that matter to me", "weights": { "experiences": 2 } },
+        { "label": "Not being able to help family the way I'd want to", "weights": { "connection": 2 } }
+      ]
+    },
+    {
+      "id": "q12", "section": 3, "type": "slider",
+      "prompt": "How comfortable are you taking financial risk?",
+      "helper": "There's no target position — just where you naturally sit today.",
+      "leftLabel": "Prefer certainty", "rightLabel": "Comfortable with ups and downs",
+      "midLabel": "Somewhere in between", "default": 50,
+      "lowWeights": { "security": 2 }, "highWeights": { "growth": 2 }
+    },
+    {
+      "id": "q13", "section": 3, "type": "single", "eyebrow": "A gentle trade-off",
+      "prompt": "You have $8,000 spare. Which pull is stronger?",
+      "options": [
+        { "label": "Clear the last of a debt", "sub": "The relief of owing nothing.", "weights": { "security": 2 } },
+        { "label": "Take the family somewhere special", "sub": "Memories you'll all keep.", "weights": { "experiences": 1, "connection": 1 } },
+        { "label": "Invest it for later", "sub": "Let it grow quietly in the background.", "weights": { "growth": 2 } }
+      ]
+    },
+    {
+      "id": "q14", "section": 3, "type": "single",
+      "prompt": "I'll know I have \"enough\" when…",
+      "options": [
+        { "label": "My bills are covered with room to spare", "weights": { "security": 2 } },
+        { "label": "I can choose how I spend my time", "weights": { "freedom": 2 } },
+        { "label": "My investments can support what's ahead", "weights": { "growth": 2 } },
+        { "label": "I can enjoy money without a second thought", "weights": { "experiences": 1, "balance": 1 } },
+        { "label": "The people I love are taken care of", "weights": { "connection": 2 } },
+        { "label": "I'm putting money toward what matters to me", "weights": { "purpose": 2 } }
+      ]
+    },
+
+    {
+      "id": "q15", "section": 4, "type": "single",
+      "prompt": "How comfortable are you talking about money?",
+      "options": [
+        { "label": "Very comfortable — it comes up naturally", "narrativeOnly": true, "tag": "very" },
+        { "label": "Fairly comfortable, most of the time", "narrativeOnly": true, "tag": "fairly" },
+        { "label": "A little easier with some topics than others", "narrativeOnly": true, "tag": "selective" },
+        { "label": "Something we're still finding our way into", "narrativeOnly": true, "tag": "learning" }
+      ]
+    },
+    {
+      "id": "q16", "section": 4, "type": "single",
+      "prompt": "When you two see money differently, what matters most?",
+      "options": [
+        { "label": "Understanding each other's perspective", "weights": { "connection": 1, "collaborative": 1 } },
+        { "label": "Finding a solution quickly", "weights": { "adaptive": 2 } },
+        { "label": "Making sure both voices are heard", "weights": { "collaborative": 2 } },
+        { "label": "Sticking to what we'd already agreed", "weights": { "structured": 1, "security": 1 } },
+        { "label": "Just moving forward together", "weights": { "adaptive": 1, "connection": 1 } }
+      ]
+    },
+    {
+      "id": "q17", "section": 4, "type": "ranking", "anchor": "compass", "rankCount": 3,
+      "prompt": "In a financial partner, what matters most to you?",
+      "helper": "Drag your top three into order.",
+      "items": [
+        { "label": "Honesty about money", "weights": { "security": 1 } },
+        { "label": "Independence and flexibility with money", "weights": { "freedom": 1 } },
+        { "label": "Ambition to grow together", "weights": { "growth": 1 } },
+        { "label": "Enjoying life together", "weights": { "experiences": 1 } },
+        { "label": "Generosity toward each other and family", "weights": { "connection": 1 } },
+        { "label": "Living by shared values", "weights": { "purpose": 1 } },
+        { "label": "Thinking about our future together", "weights": { "legacy": 1 } },
+        { "label": "A balanced approach to spending and saving", "weights": { "balance": 1 } }
+      ]
+    },
+    {
+      "id": "q18", "section": 4, "type": "single",
+      "prompt": "How do you feel major financial decisions are best made?",
+      "options": [
+        { "label": "One of us usually takes the lead", "weights": { "structured": 2 } },
+        { "label": "We split it by what each of us is better placed to handle", "weights": { "adaptive": 1, "structured": 1 } },
+        { "label": "We talk everything through together", "weights": { "collaborative": 2 } },
+        { "label": "We each manage our own money separately", "weights": { "intuitive": 1, "freedom": 1 } }
+      ]
+    },
+    {
+      "id": "q19", "section": 4, "type": "single",
+      "prompt": "Which financial habit would strengthen your relationship the most?",
+      "options": [
+        { "label": "Regular check-ins about money", "weights": { "collaborative": 1, "structured": 1 } },
+        { "label": "Being more open about spending", "weights": { "connection": 2 } },
+        { "label": "Agreeing in advance on big purchases", "weights": { "security": 1, "structured": 1 } },
+        { "label": "Working toward a shared goal together", "weights": { "connection": 1, "growth": 1 } },
+        { "label": "More spontaneity, together", "weights": { "experiences": 1, "adaptive": 1 } }
+      ]
+    },
+
+    {
+      "id": "q20", "section": 5, "type": "multi", "anchor": "compass", "choose": 3,
+      "prompt": "A wealthy life is rich in…",
+      "helper": "Choose the three that ring truest for you.",
+      "options": [
+        { "label": "Security", "weights": { "security": 2 } },
+        { "label": "Freedom", "weights": { "freedom": 2 } },
+        { "label": "Growth", "weights": { "growth": 2 } },
+        { "label": "Experiences", "weights": { "experiences": 2 } },
+        { "label": "Connection", "weights": { "connection": 2 } },
+        { "label": "Purpose", "weights": { "purpose": 2 } },
+        { "label": "Legacy", "weights": { "legacy": 2 } },
+        { "label": "Balance", "weights": { "balance": 2 } }
+      ]
+    },
+    {
+      "id": "q21", "section": 5, "type": "single",
+      "prompt": "Which future are you trying to build?",
+      "options": [
+        { "label": "One where we never have to worry about the basics", "weights": { "security": 2 } },
+        { "label": "One where we have real choices about how we live", "weights": { "freedom": 2 } },
+        { "label": "One where our money keeps working long after we've stopped", "weights": { "legacy": 2 } },
+        { "label": "One full of shared experiences and memories", "weights": { "experiences": 2 } },
+        { "label": "One where family always comes first", "weights": { "connection": 2 } },
+        { "label": "One where we've made a difference in something bigger than us", "weights": { "purpose": 2 } }
+      ]
+    }
+  ]
+}

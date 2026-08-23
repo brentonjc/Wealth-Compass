@@ -1,0 +1,9 @@
+.DS_Store
+node_modules/
+.netlify/
+*.wc
+.env
+.env.local
+
+# Local, user-specific Claude settings (keep launch.json shared)
+.claude/settings.local.json

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Wealth Compass™ — Report</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<meta name="robots" content="noindex" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#F6F9FC; --card:#FFFFFF; --card2:#F0F3F9; --card3:#E7ECF5;
+    --primary:#5851E8; --primarybright:#635BFF; --purple:#6C63E0; --purplelight:#8B85FF;
+    --success:#0F9E73; --warn:#C97A0E; --text:#0A2540; --muted:#5A6B85; --line:rgba(10,37,64,.12);
+    --ink:#111B34; --textdark:#EAF0FA;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:#E4E8F0;font-family:'DM Sans',system-ui,sans-serif;color:var(--text);-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .display{font-family:'Sora',system-ui,sans-serif;}
+  .mono{font-family:'DM Mono',ui-monospace,monospace;}
+
+  .toolbar{position:sticky;top:0;z-index:50;background:#0A2540;color:#EAF0FA;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;}
+  .toolbar h1{font-size:15px;margin:0;font-weight:600;}
+  .toolbar p{margin:0;font-size:12px;color:#8291AD;}
+  .toolbar .actions{display:flex;gap:10px;}
+  .toolbar button,.toolbar a{background:var(--primarybright);color:#fff;border:0;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;}
+  .toolbar a.ghost{background:transparent;border:1px solid rgba(255,255,255,.28);}
+
+  .page{
+    width:794px; min-height:1123px; background:#fff; margin:14px auto; padding:56px 56px 48px;
+    box-shadow:0 10px 30px rgba(10,37,64,.14); position:relative; display:flex; flex-direction:column;
+  }
+  .page.ink{background:linear-gradient(165deg,#0A0E1A 0%,#111B34 60%,#1C2A4C 100%);color:var(--textdark);}
+
+  .rpt-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:20px;}
+  .ink .rpt-head{border-color:rgba(130,145,173,.28);}
+  .brand{display:flex;align-items:center;gap:9px;font-family:'Sora';font-weight:600;font-size:15px;}
+  .eyebrow{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--primary);}
+  .ink .eyebrow{color:var(--purplelight);}
+  .rpt-title{font-family:'Sora';font-weight:600;font-size:30px;margin:6px 0 0;letter-spacing:-.01em;}
+  .meta{text-align:right;font-size:12px;color:var(--muted);line-height:1.6;}
+  .ink .meta{color:#8291AD;}
+  .foot{margin-top:auto;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
+  .ink .foot{border-color:rgba(130,145,173,.28);color:#8291AD;}
+
+  h2.section{font-family:'Sora';font-weight:600;font-size:15px;letter-spacing:.02em;margin:26px 0 12px;display:flex;align-items:center;gap:8px;}
+  h2.section .num{width:22px;height:22px;border-radius:6px;background:var(--card2);color:var(--primary);font-size:12px;display:inline-flex;align-items:center;justify-content:center;font-family:'DM Mono';}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;}
+  .card+.card{margin-top:14px;}
+  .card.tint{background:var(--card2);border-color:transparent;}
+  .card.dark{background:var(--ink);color:var(--textdark);border:0;}
+  .card.rule{border-left:4px solid var(--primary);}
+  p.lead{font-size:15px;line-height:1.55;margin:0;}
+  p.body{font-size:13px;line-height:1.6;color:var(--muted);margin:6px 0 0;}
+  .dark p.body{color:rgba(234,240,250,.72);}
+  .kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--primary);margin:0 0 6px;}
+  .dark .kicker{color:var(--purplelight);}
+
+  .radar-wrap{display:flex;gap:24px;align-items:center;margin-top:16px;}
+  .radar-box{background:var(--ink);border-radius:16px;padding:14px;flex-shrink:0;}
+  .legend{display:flex;flex-direction:column;gap:10px;font-size:12px;}
+  .legend .row{display:flex;align-items:center;gap:8px;}
+  .swatch{width:12px;height:12px;border-radius:3px;}
+
+  .bars{display:flex;flex-direction:column;gap:11px;flex:1;}
+  .bar-row{display:flex;flex-direction:column;gap:5px;}
+  .bar-top{display:flex;justify-content:space-between;font-size:13px;}
+  .bar-top .tier{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;}
+  .track{height:8px;border-radius:99px;background:var(--card3);}
+  .fill{height:100%;border-radius:99px;background:var(--primary);}
+
+  .journey text{font-family:'DM Sans';}
+
+  ol.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:11px;}
+  ol.steps li{counter-increment:s;display:flex;gap:12px;font-size:13px;line-height:1.5;}
+  ol.steps li::before{content:counter(s);flex-shrink:0;width:24px;height:24px;border-radius:99px;background:var(--primary);color:#fff;font-family:'DM Mono';font-size:12px;display:flex;align-items:center;justify-content:center;}
+  ol.steps li .dim{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+
+  .closing{text-align:center;font-family:'Sora';font-weight:500;font-size:17px;margin:28px 0 6px;line-height:1.4;}
+  .ink .closing{color:var(--textdark);}
+
+  .empty{max-width:520px;margin:80px auto;background:#fff;border-radius:16px;padding:40px;text-align:center;box-shadow:0 10px 30px rgba(10,37,64,.12);}
+  .empty h2{font-family:'Sora';margin:0 0 10px;}
+  .empty a{color:var(--primary);font-weight:600;}
+
+  @media print{
+    body{background:#fff;} .toolbar{display:none;}
+    .page{margin:0;box-shadow:none;width:auto;min-height:auto;page-break-after:always;padding:48px;}
+    @page{size:A4;margin:0;}
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs><g id="wm"><path d="M0,10 C5,3 13,3 18,10 C23,17 31,17 36,10 C41,3 49,3 54,10 C59,17 67,17 72,10" fill="none" stroke="#FF8A3D" stroke-width="2.4" stroke-linecap="round"/><path d="M0,10 C5,17 13,17 18,10 C23,3 31,3 36,10 C41,17 49,17 54,10 C59,3 67,3 72,10" fill="none" stroke="#57E0D0" stroke-width="2.4" stroke-linecap="round"/></g></defs></svg>
+
+<div class="toolbar" id="toolbar">
+  <div><h1 id="tbtitle">Wealth Compass™ — Report</h1><p>A4 portrait · print → “Save as PDF”.</p></div>
+  <div class="actions"><a class="ghost" href="index.html">← Back to app</a><button onclick="window.print()">Save as PDF</button></div>
+</div>
+<div id="pages"></div>
+
+<script type="module">
+import { buildCompassResult, buildNavigationResult, buildSharedResult, buildActionList } from './src/results.js';
+import { renderRose, renderSharedRose } from './src/charts.js';
+
+Chart.defaults.animation = false; // draw synchronously so print captures the charts
+
+const pagesEl = document.getElementById('pages');
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+const today = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+const brand = `<div class="brand"><svg width="72" height="20" viewBox="0 0 72 20"><use href="#wm"/></svg> Wealth Compass™</div>`;
+const foot = `<div class="foot"><span>🔒 Private to you — generated on your device.</span><span>wealthcompass.app</span></div>`;
+
+function head(who, title, sub) {
+  return `<div class="rpt-head"><div>${brand}<p class="eyebrow" style="margin-top:18px">${esc(who)}</p><h1 class="rpt-title">${esc(title)}</h1></div>
+    <div class="meta">Prepared ${today}<br>${esc(sub)}<br><span style="color:var(--primary)">🔒 Private to you</span></div></div>`;
+}
+function bar(d) {
+  return `<div class="bar-row"><div class="bar-top"><span>${d.icon} ${esc(d.name)}</span><span class="tier">${esc(d.tier || '')}</span></div>
+    <div class="track"><div class="fill" style="width:${d.score}%"></div></div></div>`;
+}
+
+// journey SVG (mirrors the in-app navigation chart)
+function journeySvg(ordered) {
+  const xs = [40, 110, 180, 250, 320];
+  const y = (s) => 190 - (s / 100) * 130;
+  const pts = ordered.map((d, i) => ({ x: xs[i], ...d, y: y(d.score) }));
+  const colors = ['#5851E8', '#2CA6A4', '#6C63E0', '#E3A94B', '#17A673'];
+  const path = pts.map((p, i) => (i === 0 ? `M${p.x},${p.y}` : `C${pts[i-1].x+35},${pts[i-1].y} ${p.x-35},${p.y} ${p.x},${p.y}`)).join(' ');
+  return `<svg class="journey" viewBox="0 0 360 252" style="width:100%;margin-top:8px" role="img" aria-label="Line chart of the five navigation preferences; each is listed with its score below.">
+    <g stroke="#EEF1F7" stroke-width="1"><line x1="24" y1="48" x2="336" y2="48"/><line x1="24" y1="128" x2="336" y2="128"/><line x1="24" y1="208" x2="336" y2="208"/></g>
+    <path d="${path} L320,208 L40,208 Z" fill="rgba(88,81,232,.05)"/>
+    <path d="${path}" fill="none" stroke="#5851E8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${pts.map((p, i) => `<circle cx="${p.x}" cy="${p.y}" r="7" fill="${colors[i]}"/><circle cx="${p.x}" cy="${p.y}" r="3" fill="#fff"/><text x="${p.x}" y="${p.y-16}" text-anchor="middle" font-size="14">${p.icon}</text>`).join('')}
+    ${pts.map((p) => `<text x="${p.x}" y="234" text-anchor="middle" font-size="10.5" font-weight="500" fill="#3A4A63">${esc(p.name)}</text>`).join('')}
+  </svg>`;
+}
+
+function reportCompass(A, C, state) {
+  const r = buildCompassResult(A, C, state.scores);
+  const actions = buildActionList(A, C, state.scores);
+  const who = `${state.name ? state.name + "'s" : 'Your'} report`;
+  pagesEl.innerHTML = `
+  <section class="page">
+    ${head(who, 'My Wealth Compass', '8 directions')}
+    <div class="radar-wrap"><div class="radar-box"><canvas id="rose" width="300" height="300" role="img" aria-label="Radar chart of your eight compass directions; the ranked list is beside it."></canvas></div>
+      <div class="bars">${r.ranked.map(bar).join('')}</div></div>
+    ${foot}
+  </section>
+  <section class="page">
+    ${head(who, 'What your compass suggests', 'Narrative & next steps')}
+    <div class="card dark"><p class="kicker">What this means</p><p class="lead" style="color:var(--textdark)">${esc(r.whatThisMeans.lead)}</p><p class="body">${esc(r.whatThisMeans.body)}</p></div>
+    <div class="card rule"><p class="kicker">An area to explore</p><p class="lead">${esc(r.areaToExplore)}</p></div>
+    <div class="card"><p class="kicker">Worth reflecting on</p><p class="lead">“${esc(r.reflection)}”</p></div>
+    <h2 class="section"><span class="num">✓</span>Your first steps</h2>
+    <ol class="steps">${actions.map((a) => `<li><span><span class="dim">${a.icon} ${esc(a.dim)}</span>${esc(a.text)}</span></li>`).join('')}</ol>
+    ${foot}
+  </section>`;
+  renderRose(document.getElementById('rose'), A, state.scores);
+}
+
+function reportNavigation(A, C, state) {
+  const r = buildNavigationResult(A, C, state.scores);
+  const ordered = [...r.ordered].sort((a, b) => b.score - a.score);
+  const who = `${state.name ? state.name + "'s" : 'Your'} report`;
+  pagesEl.innerHTML = `
+  <section class="page">
+    ${head(who, 'My Navigation Preferences', '5 preferences')}
+    <div class="card tint" style="margin-top:16px">${journeySvg(r.ordered)}</div>
+    <div class="bars" style="margin-top:18px">${ordered.map((d) => bar({ ...d, tier: '' })).join('')}</div>
+    ${foot}
+  </section>
+  <section class="page">
+    ${head(who, 'How this plays out', 'Recommendations & insights')}
+    <div class="card dark"><p class="kicker">How you tend to decide</p><p class="lead" style="color:var(--textdark)">${esc(r.decide)}</p></div>
+    <div class="card rule"><p class="kicker">Working with others</p><p class="lead">${esc(r.withOthers)}</p></div>
+    ${foot}
+  </section>`;
+}
+
+function reportShared(A, C, state) {
+  if (!state.partner || !state.partner.scores) return empty('This report needs your partner’s Compass. Add it from the app, then download again.');
+  const names = { me: state.name || 'You', partner: state.partner.name || 'Partner' };
+  const r = buildSharedResult(A, C, state.scores, state.partner.scores, names);
+  pagesEl.innerHTML = `
+  <section class="page ink">
+    ${head(`${names.me} & ${names.partner}`, 'Our Shared Compass', 'Two compasses, overlaid')}
+    <div style="display:flex;gap:24px;align-items:center;margin-top:18px">
+      <div class="radar-box"><canvas id="srose" width="300" height="300" role="img" aria-label="Overlaid radar chart comparing both partners across the eight compass directions."></canvas></div>
+      <div class="legend"><div class="row"><span class="swatch" style="background:#635BFF"></span>${esc(names.me)}</div><div class="row"><span class="swatch" style="background:#8B85FF"></span>${esc(names.partner)}</div></div>
+    </div>
+    ${foot}
+  </section>
+  <section class="page">
+    ${head(`${names.me} & ${names.partner}`, 'What you share', 'Where you meet & differ')}
+    <div class="card dark"><p class="kicker">${esc(C.screens.shared.directionLabel)}</p><p class="lead" style="color:var(--textdark)">${esc(r.sharedDirection)}</p></div>
+    <div class="card rule"><p class="kicker">${esc(C.screens.shared.focusLabel)}</p><p class="lead">${esc(r.differentFocus)}</p></div>
+    <p class="closing">${esc(r.closing)}</p>
+    ${foot}
+  </section>`;
+  renderSharedRose(document.getElementById('srose'), A, state.scores, state.partner.scores, names);
+}
+
+function empty(msg) {
+  document.getElementById('toolbar').style.display = 'none';
+  pagesEl.innerHTML = `<div class="empty"><h2>Nothing to show yet</h2><p style="color:var(--muted)">${esc(msg)}</p><p style="margin-top:18px"><a href="index.html">← Back to Wealth Compass</a></p></div>`;
+}
+
+(async () => {
+  const [A, C] = await Promise.all([
+    fetch('src/data/assessment.json').then((r) => r.json()),
+    fetch('src/data/copy.json').then((r) => r.json()),
+  ]);
+  let state = {};
+  try { state = JSON.parse(localStorage.getItem('wealthcompass.v3')) || {}; } catch {}
+  const params = new URLSearchParams(location.search);
+  const type = params.get('type') || 'compass';
+  const titles = { compass: 'My Wealth Compass', navigation: 'My Navigation Preferences', shared: 'Our Shared Compass' };
+  document.getElementById('tbtitle').textContent = `Wealth Compass™ — ${titles[type] || 'Report'}`;
+
+  if (!state.scores) { empty('Finish the assessment in the app first — then your report will appear here, ready to save as a PDF.'); return; }
+  if (type === 'navigation') reportNavigation(A, C, state);
+  else if (type === 'shared') reportShared(A, C, state);
+  else reportCompass(A, C, state);
+
+  if (params.get('print') === '1') {
+    // let fonts + charts settle, then open the print dialog
+    requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => window.print(), 350)));
+  }
+})();
+</script>
+</body>
+</html>

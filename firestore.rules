@@ -1,0 +1,21 @@
+rules_version = '2';
+// Wealth Compass — partner share handoff.
+// Only ciphertext blobs are ever stored. A share is created once under a random
+// 4-char code, read by anyone who knows that exact code, and can never be listed,
+// updated or deleted from the client.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /shares/{code} {
+      // Fetch a single code you already have (the partner types it in).
+      allow get: if true;
+
+      // Create a new share: ciphertext only, and small enough to be sane.
+      allow create: if request.resource.data.data is string
+                    && request.resource.data.data.size() < 200000
+                    && request.resource.data.v is int;
+
+      // Never allow enumerating, changing, or removing shares from the client.
+      allow list, update, delete: if false;
+    }
+  }
+}

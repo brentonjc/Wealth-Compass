@@ -1,0 +1,21 @@
+key,text
+reports.partnerEyebrow,For your partner
+reports.partnerHeadline,Invite your partner to take theirs.
+reports.partnerBody,"Choose a shared passphrase, then send your partner the code below. When they finish, you'll both unlock Our Shared Compass."
+reports.passphrasePlaceholder,Choose a passphrase you'll both remember
+reports.shareCodeLabel,Your share code
+reports.copyButton,Copy link
+reports.encryptionNote,🔒 Encrypted on your device before it's saved — we can't read it.
+reports.fileFallback,or download an encrypted file instead
+reports.lockedTitle,Our Shared Compass
+reports.lockedDesc,Unlocks when your partner completes theirs
+partnerJoin.eyebrow,Two compasses
+partnerJoin.headline,Add your partner's Compass
+partnerJoin.subhead,"Enter the share code they sent you, then take your own journey. At the end, you'll both see your Shared Compass."
+partnerJoin.codeLabel,Share code
+partnerJoin.codePlaceholder,e.g. K7QM
+partnerJoin.passphraseLabel,Shared passphrase
+partnerJoin.passphrasePlaceholder,The word you agreed on together
+partnerJoin.encryptionNote,🔒 Their Compass is only unlocked on this device — the passphrase decrypts it.
+partnerJoin.fallback,No code? Upload their file instead
+partnerJoin.button,Unlock & begin my journey
